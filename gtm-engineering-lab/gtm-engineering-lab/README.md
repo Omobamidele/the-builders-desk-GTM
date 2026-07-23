@@ -42,4 +42,4 @@ Every week, something new gets added, a template, a workflow, a prompt set, or a
 
 ## License
 
-Everything here is free to use, fork, and adapt. Attribution appreciated, not required. (Swap in whatever license, MIT recommended for max reuse — before you publish.)
+Everything here is free to use, fork, and adapt. Attribution appreciated, not required. (Swap in whatever license, MIT recommended for max reuse... before you publish.)
