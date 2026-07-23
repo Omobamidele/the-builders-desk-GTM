@@ -1,6 +1,6 @@
 # GTM Engineering Lab
 
-A public, evolving library for people who want to learn AI, sales, and GTM engineering **by building** — not by reading threads and bookmarking them forever.
+A public, evolving library for people who want to learn AI, sales, and GTM engineering **by building**, not by reading threads and bookmarking them forever.
 
 This isn't a one-time content drop. It's a working repo that grows weekly, built in the open, with templates, prompts, workflows, and code that anyone can use, fork, or improve. If you're the kind of person who learns by shipping something small every day, this is your library.
 
@@ -42,4 +42,4 @@ Every week, something new gets added — a template, a workflow, a prompt set, o
 
 ## License
 
-Everything here is free to use, fork, and adapt. Attribution appreciated, not required. (Swap in whatever license — MIT recommended for max reuse — before you publish.)
+Everything here is free to use, fork, and adapt. Attribution appreciated, not required. (Swap in whatever license, MIT recommended for max reuse — before you publish.)
