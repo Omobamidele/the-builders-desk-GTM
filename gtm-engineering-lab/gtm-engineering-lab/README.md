@@ -38,7 +38,7 @@ Short version: fork it, add your thing following the naming convention, open a P
 
 ## Weekly update log
 
-Every week, something new gets added — a template, a workflow, a prompt set, or a real example from a live build. The running log lives in [`community/weekly-updates.md`](./community/weekly-updates.md). Star/watch the repo if you want to follow along, or check that file weekly.
+Every week, something new gets added, a template, a workflow, a prompt set, or a real example from a live build. The running log lives in [`community/weekly-updates.md`](./community/weekly-updates.md). Star/watch the repo if you want to follow along, or check that file weekly.
 
 ## License
 
