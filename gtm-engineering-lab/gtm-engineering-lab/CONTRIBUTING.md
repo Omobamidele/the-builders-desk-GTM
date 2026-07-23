@@ -1,6 +1,6 @@
 # Contributing
 
-This repo grows because people building GTM/AI systems share what they made. You don't need to be an expert, and you don't need permission — you need something real (even small) and five minutes to format it.
+This repo grows because people building GTM/AI systems share what they made. You don't need to be an expert, and you don't need permission, you need something real (even small) and five minutes to format it.
 
 ## What we're looking for
 
@@ -18,13 +18,13 @@ If you're not sure it fits, open an issue and ask. Worst case we point you to a 
 
 Before you submit, check:
 
-- [ ] It's usable by someone who isn't you — placeholders instead of your actual company data, clear enough to follow without extra context
+- [ ] It's usable by someone who isn't you... placeholders instead of your actual company data, clear enough to follow without extra context
 - [ ] It's in Markdown and renders cleanly on GitHub (headers, tables, checkboxes — preview it before you submit)
 - [ ] It follows the naming convention: lowercase, kebab-case, in the right category folder
 - [ ] If it's a template, it goes in that category's `templates/` folder; if it's a real filled-in example, it goes in `examples/`
-- [ ] No confidential info, no client names, no live API keys or credentials — scrub before you push
+- [ ] No confidential info, no client names, no live API keys or credentials, scrub before you push
 
-That's it. It doesn't need to be polished. It needs to be real and usable.
+That's it. It doesn't need to be polished but It needs to be real and usable.
 
 ## How to submit
 
@@ -34,7 +34,7 @@ That's it. It doesn't need to be polished. It needs to be real and usable.
 4. Open a pull request with a short description: what it is, and what problem it solves
 5. Tag it with the category name (e.g. `cold-email`, `prompting`, `sql`)
 
-Don't have a GitHub workflow down yet? Open an issue instead, paste your content in, and someone will help you get it in properly. First-time contributors are welcome — we'd rather help you PR your first thing than have you not contribute at all.
+Don't have a GitHub workflow down yet? Open an issue instead, paste your content in, and someone will help you get it in properly. First-time contributors are welcome, we'd rather help you PR your first thing than have you not contribute at all.
 
 ## Review process
 
