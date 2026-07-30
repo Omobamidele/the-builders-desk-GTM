@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Exposure Card</title>
+<style>
+  :root{
+    --paper:#EAE6DB;
+    --paper-edge:#DCD6C6;
+    --ink:#211F1A;
+    --ink-soft:#5B5648;
+    --rule:#B8B09A;
+    --stamp:#9C2B22;
+    --desk:#15140F;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--desk);
+    background-image:radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.05), transparent 60%);
+    font-family:'Courier New', Courier, monospace;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:48px 20px 80px;
+  }
+  .document{
+    position:relative;
+    width:100%;
+    max-width:640px;
+    background:var(--paper);
+    padding:52px 44px 56px;
+    box-shadow:0 30px 60px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.4) inset;
+    border:1px solid var(--paper-edge);
+  }
+  .document::before{
+    content:"";
+    position:absolute;
+    inset:10px;
+    border:1px solid rgba(33,31,26,0.15);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:0.28em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    display:flex;
+    justify-content:space-between;
+    border-bottom:1px solid var(--rule);
+    padding-bottom:14px;
+    margin-bottom:26px;
+  }
+  h1{
+    font-size:clamp(26px,5vw,34px);
+    letter-spacing:0.02em;
+    margin:0 0 6px;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .sub{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:0 0 22px;
+    line-height:1.6;
+    max-width:46ch;
+  }
+  .progress-track{
+    height:6px;
+    width:100%;
+    background:rgba(33,31,26,0.1);
+    margin-bottom:30px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:var(--stamp);
+    transition:width 0.35s ease;
+  }
+  .intro{
+    font-size:13.5px;
+    line-height:1.75;
+    color:var(--ink);
+    border-left:2px solid var(--stamp);
+    padding-left:16px;
+    margin:0 0 36px;
+  }
+  .q-list{
+    list-style:none;
+    margin:0 0 34px;
+    padding:0;
+    border-top:1px solid var(--rule);
+  }
+  .q{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    padding:18px 0;
+    border-bottom:1px solid var(--rule);
+    cursor:pointer;
+  }
+  .q-num{
+    font-size:12px;
+    color:var(--ink-soft);
+    padding-top:2px;
+    letter-spacing:0.05em;
+    flex-shrink:0;
+    width:24px;
+  }
+  .box{
+    flex-shrink:0;
+    width:18px;
+    height:18px;
+    border:1.5px solid var(--ink);
+    margin-top:1px;
+    position:relative;
+    transition:background 0.15s ease;
+  }
+  .box.checked{ background:var(--ink); }
+  .q-body{ flex:1; }
+  .q-text{
+    font-size:14px;
+    line-height:1.55;
+    display:block;
+  }
+  .q-reveal{
+    font-size:12px;
+    line-height:1.6;
+    color:var(--stamp);
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition:max-height 0.35s ease, opacity 0.35s ease, margin-top 0.35s ease;
+  }
+  .q-reveal.show{
+    max-height:60px;
+    opacity:1;
+    margin-top:8px;
+  }
+  .q-reveal b{ color:var(--ink); }
+  .q-reveal .tag{
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    border:1px solid var(--stamp);
+    padding:1px 6px;
+    margin-left:6px;
+    color:var(--stamp);
+  }
+  button{
+    font-family:inherit;
+    width:100%;
+    background:transparent;
+    border:1.5px solid var(--ink);
+    color:var(--ink);
+    padding:16px;
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  button:hover{ background:var(--ink); color:var(--paper); }
+  button:disabled{ opacity:0.4; cursor:default; }
+  button:disabled:hover{ background:transparent; color:var(--ink); }
+
+  .verdict{ margin-top:38px; display:none; position:relative; }
+  .verdict.show{ display:block; }
+  .stamp-wrap{ display:flex; justify-content:center; padding:10px 0 20px; }
+  .stamp{
+    border:4px solid var(--stamp);
+    color:var(--stamp);
+    padding:10px 22px;
+    font-weight:700;
+    font-size:clamp(18px,4vw,26px);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    transform:rotate(-6deg) scale(0.6);
+    opacity:0;
+    text-align:center;
+    filter:blur(1px);
+  }
+  .stamp.animate{ animation:slam 0.4s ease-out forwards; }
+  .stamp.pulse{ animation:slam 0.4s ease-out forwards, glow 1.8s ease-in-out infinite 0.5s; }
+  @keyframes slam{
+    0%{ transform:rotate(-6deg) scale(2.2); opacity:0; filter:blur(4px); }
+    60%{ transform:rotate(-6deg) scale(0.92); opacity:1; filter:blur(0); }
+    100%{ transform:rotate(-6deg) scale(1); opacity:1; filter:blur(0); }
+  }
+  @keyframes glow{
+    0%,100%{ box-shadow:0 0 0px rgba(156,43,34,0.0); }
+    50%{ box-shadow:0 0 22px rgba(156,43,34,0.5); }
+  }
+  .score-line{
+    text-align:center;
+    font-size:12px;
+    letter-spacing:0.2em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    margin-bottom:22px;
+  }
+  .cost-label-row{
+    text-align:center;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+  .cost-row{ display:flex; gap:12px; margin-bottom:26px; }
+  .cost-box{
+    flex:1;
+    border:1.5px solid var(--rule);
+    padding:16px 8px;
+    text-align:center;
+    transition:border-color 0.2s ease, background 0.2s ease;
+  }
+  .cost-box.active{ border-color:var(--stamp); background:rgba(156,43,34,0.06); }
+  .cost-tag{
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .cost-count{ font-size:26px; font-weight:700; color:var(--ink); }
+  .cost-box.active .cost-count{ color:var(--stamp); }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:22px; }
+  .chip{
+    font-size:11px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:6px 12px;
+    border:1px solid var(--ink);
+    color:var(--ink);
+    background:var(--paper-edge);
+    opacity:0;
+    transform:translateY(6px);
+    animation:chipIn 0.35s ease forwards;
+  }
+  @keyframes chipIn{ to{ opacity:1; transform:translateY(0); } }
+  .diagnosis{
+    font-size:14.5px;
+    line-height:1.75;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    padding:22px 0;
+    margin-bottom:22px;
+  }
+  .footer-note{ font-size:12px; color:var(--ink-soft); line-height:1.7; margin-bottom:18px; }
+  .action-row{ display:flex; gap:10px; }
+  .action-row button{ font-size:11px; padding:12px; }
+  .reset{ background:none; border:1.5px solid var(--rule); color:var(--ink-soft); }
+  .reset:hover{ background:var(--rule); color:var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="document">
+  <div class="eyebrow">
+    <span>Confidential / Self Use Only</span>
+    <span id="dateStamp"></span>
+  </div>
+
+  <h1>The AI Exposure Card</h1>
+  <p class="sub">Six questions. Check the ones that are true. Each one has a name, and a cost: pipeline, revenue, or time.</p>
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <p class="intro">This isn't about whether you use AI. Everyone does now. It's about which decisions you've quietly stopped making yourself, and what that's already costing your GTM motion.</p>
+
+  <ul class="q-list" id="qList">
+    <li class="q" data-q="0" data-name="Borrowed ICP" data-cost="Pipeline" data-note="You're chasing accounts that look right on paper and churn anyway.">
+      <span class="q-num">01</span><span class="box"></span>
+      <div class="q-body">
+        <span class="q-text">You built or updated your ICP using AI's suggestion, without pulling your own closed won and churn data first.</span>
+        <div class="q-reveal"></div>
+      </div>
+    </li>
+    <li class="q" data-q="1" data-name="Blind Discount" data-cost="Revenue" data-note="You don't actually know what this deal cost you until it's too late.">
+      <span class="q-num">02</span><span class="box"></span>
+      <div class="q-body">
+        <span class="q-text">You approved or recommended a discount based on an AI generated framework, without checking your actual margin on that deal.</span>
+        <div class="q-reveal"></div>
+      </div>
+    </li>
+    <li class="q" data-q="2" data-name="Ghost Process" data-cost="Time" data-note="Something is running on autopilot that never needed to exist in the first place.">
+      <span class="q-num">03</span><span class="box"></span>
+      <div class="q-body">
+        <span class="q-text">You have an automation running right now that you built without knowing how many times a month the process actually runs.</span>
+        <div class="q-reveal"></div>
+      </div>
+    </li>
+    <li class="q" data-q="3" data-name="Stack Blindness" data-cost="Revenue" data-note="You're likely paying twice for the same capability and don't know it yet.">
+      <span class="q-num">04</span><span class="box"></span>
+      <div class="q-body">
+        <span class="q-text">You picked a tool by comparing AI generated pros and cons, without auditing what you already pay for that overlaps.</span>
+        <div class="q-reveal"></div>
+      </div>
+    </li>
+    <li class="q" data-q="4" data-name="Unverified Number" data-cost="Pipeline" data-note="The number leadership trusts most might already be wrong, and nothing will tell you until it's asked about.">
+      <span class="q-num">05</span><span class="box"></span>
+      <div class="q-body">
+        <span class="q-text">There's a number you report to leadership regularly that you have not personally verified against raw data in the last 30 days.</span>
+        <div class="q-reveal"></div>
+      </div>
+    </li>
+    <li class="q" data-q="5" data-name="Outsourced Answer" data-cost="Time" data-note="When asked why, you point at a tool instead of owning the call.">
+      <span class="q-num">06</span><span class="box"></span>
+      <div class="q-body">
+        <span class="q-text">If your boss asked why a specific number in your last report is what it is, your honest answer would include the words "the tool."</span>
+        <div class="q-reveal"></div>
+      </div>
+    </li>
+  </ul>
+
+  <button id="calcBtn">Calculate Exposure</button>
+
+  <div class="verdict" id="verdict">
+    <div class="score-line" id="scoreLine"></div>
+    <div class="stamp-wrap"><div class="stamp" id="stamp"></div></div>
+
+    <div class="cost-label-row">What it's costing you</div>
+    <div class="cost-row">
+      <div class="cost-box" id="costPipeline"><div class="cost-tag">Pipeline</div><div class="cost-count">0</div></div>
+      <div class="cost-box" id="costRevenue"><div class="cost-tag">Revenue</div><div class="cost-count">0</div></div>
+      <div class="cost-box" id="costTime"><div class="cost-tag">Time</div><div class="cost-count">0</div></div>
+    </div>
+
+    <div class="diagnosis" id="diagnosis"></div>
+    <div class="chip-row" id="chipRow"></div>
+    <div class="footer-note">The full breakdown of all six blind spots, and the checklist of exactly what data to pull before each decision, are in the other two files in this folder.</div>
+    <div class="action-row">
+      <button id="copyBtn">Copy My Results</button>
+      <button class="reset" id="resetBtn">Run It Again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const boxes = document.querySelectorAll('.q');
+  const checked = new Set();
+  const total = boxes.length;
+
+  function updateProgress(){
+    document.getElementById('progressFill').style.width = (checked.size/total*100) + '%';
+  }
+
+  boxes.forEach(q => {
+    q.addEventListener('click', () => {
+      const idx = q.dataset.q;
+      const box = q.querySelector('.box');
+      const reveal = q.querySelector('.q-reveal');
+      if(checked.has(idx)){
+        checked.delete(idx);
+        box.classList.remove('checked');
+        reveal.classList.remove('show');
+      } else {
+        checked.add(idx);
+        box.classList.add('checked');
+        reveal.innerHTML = '<b>' + q.dataset.name + '</b><span class="tag">' + q.dataset.cost + '</span><br>' + q.dataset.note;
+        reveal.classList.add('show');
+      }
+      updateProgress();
+    });
+  });
+
+  const bands = [
+    { max:1, label:'Low Exposure', pulse:false, text:"You're mostly still making these calls yourself. That's rare right now. The risk isn't today, it's letting this slide into a habit you stop noticing." },
+    { max:3, label:'Moderate Exposure', pulse:false, text:"A couple of these have already slipped. Nothing's broken yet, but you're closer to a bad report than you think. Fix the ones you checked this week, not eventually." },
+    { max:5, label:'High Exposure', pulse:true, text:"You are one report away from a conversation you don't want to have. Nothing has gone wrong yet only because nobody has asked the hard question yet. Fix this before someone does." },
+    { max:6, label:'Fully Exposed', pulse:true, text:"This is the version of the job that gets replaced first. Not because AI got better. Because the judgment part got switched off, and nobody noticed until it mattered." }
+  ];
+
+  let lastResult = null;
+
+  document.getElementById('calcBtn').addEventListener('click', () => {
+    const score = checked.size;
+    const band = bands.find(b => score <= b.max);
+    const names = Array.from(checked).sort().map(i => boxes[i].dataset.name);
+
+    const costCounts = { Pipeline:0, Revenue:0, Time:0 };
+    checked.forEach(i => { costCounts[boxes[i].dataset.cost]++; });
+
+    ['Pipeline','Revenue','Time'].forEach(cat => {
+      const el = document.getElementById('cost' + cat);
+      el.querySelector('.cost-count').textContent = costCounts[cat];
+      el.classList.toggle('active', costCounts[cat] > 0);
+    });
+
+    document.getElementById('scoreLine').textContent = score + ' of 6 checked';
+    document.getElementById('diagnosis').textContent = band.text;
+
+    const stampEl = document.getElementById('stamp');
+    stampEl.textContent = band.label;
+    stampEl.classList.remove('animate','pulse');
+    void stampEl.offsetWidth;
+    stampEl.classList.add(band.pulse ? 'pulse' : 'animate');
+
+    const chipRow = document.getElementById('chipRow');
+    chipRow.innerHTML = '';
+    names.forEach((n, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = n;
+      chip.style.animationDelay = (i * 0.08) + 's';
+      chipRow.appendChild(chip);
+    });
+
+    lastResult = score + '/6 — ' + band.label + ' — Pipeline:' + costCounts.Pipeline + ' Revenue:' + costCounts.Revenue + ' Time:' + costCounts.Time + (names.length ? ' — ' + names.join(', ') : '');
+
+    document.getElementById('verdict').classList.add('show');
+    document.getElementById('calcBtn').disabled = true;
+    document.getElementById('verdict').scrollIntoView({behavior:'smooth', block:'nearest'});
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    if(!lastResult) return;
+    const text = 'The AI Exposure Card — ' + lastResult;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      const original = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(() => { btn.textContent = original; }, 1400);
+    });
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    checked.clear();
+    document.querySelectorAll('.box').forEach(b => b.classList.remove('checked'));
+    document.querySelectorAll('.q-reveal').forEach(r => r.classList.remove('show'));
+    document.getElementById('verdict').classList.remove('show');
+    document.getElementById('calcBtn').disabled = false;
+    updateProgress();
+  });
+
+  document.getElementById('dateStamp').textContent = new Date().toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+</script>
+
+</body>
+</html>
