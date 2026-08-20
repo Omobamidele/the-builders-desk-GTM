@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mock Interview Simulator</title>
+<style>
+  :root{
+    --paper:#EAE6DB; --paper-edge:#DCD6C6; --ink:#211F1A; --ink-soft:#5B5648;
+    --rule:#B8B09A; --stamp:#9C2B22; --desk:#15140F;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--desk); background-image:radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.05), transparent 60%);
+    font-family:'Courier New', Courier, monospace; color:var(--ink);
+    min-height:100vh; display:flex; justify-content:center; padding:48px 20px 80px;
+  }
+  .document{
+    position:relative; width:100%; max-width:660px; background:var(--paper);
+    padding:48px 40px 52px; box-shadow:0 30px 60px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.4) inset;
+    border:1px solid var(--paper-edge);
+  }
+  .document::before{ content:""; position:absolute; inset:10px; border:1px solid rgba(33,31,26,0.15); pointer-events:none; }
+  .eyebrow{
+    font-size:11px; letter-spacing:0.28em; color:var(--ink-soft); text-transform:uppercase;
+    display:flex; justify-content:space-between; border-bottom:1px solid var(--rule); padding-bottom:14px; margin-bottom:26px;
+  }
+  h1{ font-size:clamp(22px,5vw,30px); letter-spacing:0.02em; margin:0 0 6px; text-transform:uppercase; font-weight:700; }
+  .sub{ font-size:14px; color:var(--ink-soft); margin:0 0 30px; line-height:1.6; }
+  button{
+    font-family:inherit; background:transparent; border:1.5px solid var(--ink); color:var(--ink);
+    padding:15px 24px; font-size:12.5px; letter-spacing:0.13em; text-transform:uppercase; cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  button:hover{ background:var(--ink); color:var(--paper); }
+  button:disabled{ opacity:0.35; cursor:default; }
+  .full{ width:100%; }
+  .screen{ display:none; }
+  .screen.show{ display:block; }
+
+  /* mode select */
+  .mode-card{
+    border:1px solid var(--rule); padding:22px 20px; margin-bottom:16px; cursor:pointer; transition:border-color .15s ease, background .15s ease;
+  }
+  .mode-card:hover{ border-color:var(--ink); background:rgba(33,31,26,0.03); }
+  .mode-title{ font-size:15px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+  .mode-desc{ font-size:13px; color:var(--ink-soft); line-height:1.6; }
+  .mode-meta{ font-size:11px; color:var(--stamp); letter-spacing:0.1em; text-transform:uppercase; margin-top:10px; }
+
+  /* progress dots */
+  .dots{ display:flex; gap:8px; justify-content:center; margin-bottom:24px; }
+  .dot{ width:9px; height:9px; border-radius:50%; border:1.5px solid var(--ink-soft); }
+  .dot.done{ background:var(--ink); border-color:var(--ink); }
+  .dot.current{ background:var(--stamp); border-color:var(--stamp); }
+
+  .q-tag{ font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--stamp); margin-bottom:12px; text-align:center; }
+  .q-text{ font-size:18px; line-height:1.5; text-align:center; margin-bottom:22px; padding:0 4px; }
+
+  .timer-row{ display:flex; gap:10px; justify-content:center; margin-bottom:8px; }
+  .timer-row button{ font-size:11px; padding:9px 14px; }
+  .timer-row button.active{ background:var(--ink); color:var(--paper); }
+  .clock{ text-align:center; font-size:38px; font-weight:700; letter-spacing:0.05em; margin-bottom:18px; }
+  .clock.warn{ color:var(--stamp); }
+
+  textarea{
+    width:100%; min-height:120px; font-family:inherit; font-size:14px; color:var(--ink);
+    background:#F4F1E9; border:1px solid var(--rule); padding:14px; resize:vertical; line-height:1.6; margin-bottom:16px;
+  }
+  textarea::placeholder{ color:#9c9686; }
+
+  .action-row{ display:flex; gap:10px; justify-content:center; margin-bottom:6px; }
+
+  .checklist{ margin-top:24px; border-top:1px solid var(--rule); padding-top:20px; display:none; }
+  .checklist.show{ display:block; }
+  .checklist-label{ font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:12px; }
+  .cl-item{ display:flex; gap:14px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--rule); cursor:pointer; }
+  .cl-box{ flex-shrink:0; width:16px; height:16px; border:1.5px solid var(--ink); margin-top:2px; }
+  .cl-box.checked{ background:var(--ink); }
+  .cl-text{ font-size:13.5px; line-height:1.5; }
+
+  .followup{
+    margin-top:20px; border-left:3px solid var(--stamp); padding:2px 0 2px 16px; display:none;
+  }
+  .followup.show{ display:block; }
+  .followup-label{ font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--stamp); margin-bottom:6px; }
+  .followup-text{ font-size:13.5px; line-height:1.6; font-style:italic; color:var(--ink-soft); }
+
+  .nav-row{ margin-top:26px; }
+
+  /* report */
+  .report-item{ margin-bottom:22px; }
+  .report-label{ display:flex; justify-content:space-between; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px; }
+  .report-bar-track{ height:10px; background:#DAD5C6; border:1px solid var(--rule); }
+  .report-bar-fill{ height:100%; background:var(--stamp); }
+  .report-note{ font-size:12.5px; color:var(--ink-soft); margin-top:6px; line-height:1.5; }
+  .report-summary{ font-size:14px; line-height:1.7; margin:22px 0 26px; padding:16px 18px; background:#F4F1E9; border:1px solid var(--rule); }
+  .tally{ text-align:center; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:20px; }
+</style>
+</head>
+<body>
+
+<div class="document">
+  <div class="eyebrow"><span>Interview Bank Tool</span><span id="dateStamp"></span></div>
+  <h1 id="pageTitle">The Mock Interview Simulator</h1>
+  <p class="sub" id="pageSub">Not a quiz. A run through Clay's actual three-stage process, plus real technical questions — typed answers, a timer, and a follow-up that pushes on your weak spot.</p>
+
+  <!-- MODE SELECT -->
+  <div class="screen show" id="modeScreen">
+    <div class="mode-card" id="fullModeCard">
+      <div class="mode-title">Full Mock Interview</div>
+      <div class="mode-desc">Runs Clay's real 3-stage hiring process end to end — the business problem investigation, the systems sketch, the mini build challenge — plus two technical spot-checks. Ends with a scored readiness report and a transcript you can keep.</div>
+      <div class="mode-meta">~25–35 min · 5 questions</div>
+    </div>
+    <div class="mode-card" id="quickModeCard">
+      <div class="mode-title">Quick Drill</div>
+      <div class="mode-desc">One random question from the full sourced bank. Good for a single rep between meetings.</div>
+      <div class="mode-meta">2–5 min · 1 question</div>
+    </div>
+  </div>
+
+  <!-- QUESTION SCREEN -->
+  <div class="screen" id="qScreen">
+    <div class="tally" id="tally"></div>
+    <div class="dots" id="dots"></div>
+    <div class="q-tag" id="qTag"></div>
+    <div class="q-text" id="qText"></div>
+
+    <div class="timer-row" id="timerRow">
+      <button data-secs="120">2 MIN</button>
+      <button data-secs="300" class="active">5 MIN</button>
+      <button data-secs="1800">30 MIN</button>
+    </div>
+    <div class="clock" id="clock">05:00</div>
+    <div class="action-row">
+      <button id="startTimerBtn">Start Timer</button>
+    </div>
+
+    <textarea id="answerBox" placeholder="Type your actual answer here — not notes, the real thing you'd say out loud. This gets saved to your transcript."></textarea>
+
+    <div class="action-row">
+      <button class="full" id="doneBtn">Done — Grade Me</button>
+    </div>
+
+    <div class="checklist" id="checklist">
+      <div class="checklist-label">Grade Yourself Against What Actually Gets Scored</div>
+      <div id="checklistItems"></div>
+    </div>
+
+    <div class="followup" id="followup">
+      <div class="followup-label">▸ Likely Follow-Up</div>
+      <div class="followup-text" id="followupText"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="full" id="advanceBtn" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- REPORT SCREEN -->
+  <div class="screen" id="reportScreen">
+    <div class="q-tag" style="margin-bottom:6px;">Session Complete</div>
+    <div class="q-text" style="font-size:16px;">Your Readiness Report</div>
+
+    <div id="reportBody"></div>
+
+    <div class="report-summary" id="reportSummary"></div>
+
+    <div class="action-row">
+      <button class="full" id="copyBtn">Copy Full Transcript</button>
+    </div>
+    <div class="nav-row">
+      <button class="full" id="restartBtn">Start Over</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const CAT = { SPEC: 'spec', UGLY: 'ugly', FUZZY: 'fuzzy' };
+  const CAT_LABEL = {
+    spec: 'Specificity — justifying with something concrete, not a vibe',
+    ugly: 'Handling the ugly parts — failure modes, fallback, no tunnel vision',
+    fuzzy: 'Fuzzy problem → structured plan — asking sharp questions before answering'
+  };
+
+  const stage1 = {
+    tag: "Clay Stage 1 · Business Problem Investigation",
+    text: "Our trial-to-paid rate won't budge. Walk me through how you'd investigate this.",
+    checklist: [
+      {t:"Did you ask who the ICP is before proposing a fix?", c:CAT.FUZZY},
+      {t:"Did you ask what's missing in the customer journey?", c:CAT.FUZZY},
+      {t:"Did you name signals that indicate someone is ready to buy or churn?", c:CAT.SPEC},
+      {t:"Did you explore both market-side levers (new data) and internal-side levers (slow handoffs), not just one?", c:CAT.UGLY},
+      {t:"Did you get specific — e.g. asking about a real successful call — instead of staying abstract?", c:CAT.SPEC}
+    ],
+    followUp: "Interviewers tend to push here if you jumped to a fix fast: 'okay, which specific segment would you start with, and why that one first?' If you can't answer that in one sentence, you investigated too little before proposing."
+  };
+
+  const stage2 = {
+    tag: "Clay Stage 2 · The Systems Sketch",
+    text: "Now turn your Stage 1 investigation into an actual systems sketch: name the specific data points you'd track, how you'd keep them clean, and how they'd plug into a real tool.",
+    checklist: [
+      {t:"Did you name actual data points, not just 'more data'?", c:CAT.SPEC},
+      {t:"Did you explain how you'd keep the data clean, not just collect it?", c:CAT.UGLY},
+      {t:"Did you describe a test → measure → iterate loop, not a one-shot design?", c:CAT.FUZZY},
+      {t:"Did you name a specific tool or system this would actually plug into?", c:CAT.SPEC}
+    ],
+    followUp: "The usual push here: 'what breaks first if this scales to 10x the volume?' A one-shot design has no answer. A sketch built for iteration does."
+  };
+
+  const stage3 = {
+    tag: "Clay Stage 3 · The Mini Build Challenge",
+    text: "Design and validate a specific set of data points that predict churn.",
+    checklist: [
+      {t:"Did you state your assumptions and fallback logic out loud?", c:CAT.SPEC},
+      {t:"Did you mention suppression or multi-channel sequencing instead of one channel to everyone?", c:CAT.UGLY},
+      {t:"Did you explain how you'd measure success and iterate afterward?", c:CAT.FUZZY},
+      {t:"Did you avoid tunnel vision — deliverability risk, targeting fatigue — the exact thing Clay names as a red flag?", c:CAT.UGLY}
+    ],
+    followUp: "Clay names tunnel vision as the specific thing that filters people out. If your build only had one channel or no fallback, expect: 'what happens when that channel stops working?'"
+  };
+
+  const techPool = [
+    { tag:"System Design & Integration", text:"How would you connect a tool like Clay, Salesforce, and HubSpot to ensure a single source of truth for lead data?",
+      checklist:[
+        {t:"Did you name which system is the source of truth and why?", c:CAT.SPEC},
+        {t:"Did you address what happens when two systems disagree?", c:CAT.UGLY},
+        {t:"Did you mention sync frequency or real-time vs batch tradeoffs?", c:CAT.SPEC},
+        {t:"Did you avoid assuming a clean, one-directional sync?", c:CAT.UGLY}
+      ], followUp:"Common push: 'walk me through the exact moment a record conflicts — what wins?' Vague answers here read as never having actually run one of these syncs." },
+    { tag:"Workflow Design", text:"How would you build a workflow that alerts an AE when an opportunity goes cold?",
+      checklist:[
+        {t:"Did you define 'cold' with a specific, measurable threshold?", c:CAT.SPEC},
+        {t:"Did you say where the alert lives (Slack, CRM, email) and why?", c:CAT.SPEC},
+        {t:"Did you address false positives — deals that look cold but aren't?", c:CAT.UGLY},
+        {t:"Did you mention how you'd know if the alert is actually working?", c:CAT.FUZZY}
+      ], followUp:"Likely push: 'how many false alerts would this fire in an average week, and how would you know?' A number, even a rough one, beats 'not many.'" },
+    { tag:"Data Pipeline & Quality", text:"Walk me through a data pipeline you've built. What were the inputs, the transformations, and the outputs?",
+      checklist:[
+        {t:"Did you name the actual inputs, not just 'data'?", c:CAT.SPEC},
+        {t:"Did you explain a specific transformation and why it was needed?", c:CAT.SPEC},
+        {t:"Did you mention what happens to records that fail transformation?", c:CAT.UGLY},
+        {t:"Did you describe the output in terms of what it enabled, not just where it landed?", c:CAT.FUZZY}
+      ], followUp:"Expect: 'what's your error rate, roughly, and where do the failures go?' If you've never checked, that's the honest — and telling — answer." },
+    { tag:"Data Pipeline & Quality", text:"How do you monitor data quality across systems and prevent sync errors?",
+      checklist:[
+        {t:"Did you name a specific monitoring method, not just 'I'd check regularly'?", c:CAT.SPEC},
+        {t:"Did you mention alerting when something breaks, not just detecting it?", c:CAT.UGLY},
+        {t:"Did you address prevention, not only detection after the fact?", c:CAT.FUZZY}
+      ], followUp:"Push: 'who gets paged when it breaks at 2am?' Monitoring with no owner isn't monitoring." },
+    { tag:"Technical Fluency", text:"What's your experience writing SQL queries or using APIs for integrations?",
+      checklist:[
+        {t:"Did you give a specific example instead of a general claim?", c:CAT.SPEC},
+        {t:"Did you mention a time a query or integration didn't work as expected?", c:CAT.UGLY},
+        {t:"Did you avoid overstating tool-specific knowledge you don't actually have?", c:CAT.SPEC}
+      ], followUp:"Push: 'what was the actual error, and how did you find it?' Real debugging stories have a specific error message. Invented ones don't." },
+    { tag:"Diagnosis", text:"If marketing says lead volume is up but pipeline hasn't increased, where would you start diagnosing?",
+      checklist:[
+        {t:"Did you check lead quality before assuming a sales-side problem?", c:CAT.FUZZY},
+        {t:"Did you look at routing and speed-to-lead, not just volume?", c:CAT.UGLY},
+        {t:"Did you propose a specific, checkable hypothesis rather than several vague ones?", c:CAT.SPEC},
+        {t:"Did you say what data you'd actually pull first?", c:CAT.FUZZY}
+      ], followUp:"Push: 'you can only pull one report first — which one?' Forces you to prioritize instead of listing everything." },
+    { tag:"Judgment & Collaboration", text:"Describe a time you balanced a short-term sales need against long-term system scalability.",
+      checklist:[
+        {t:"Did you name the actual tradeoff, not just that one existed?", c:CAT.SPEC},
+        {t:"Did you explain why you chose what you chose?", c:CAT.SPEC},
+        {t:"Did you mention what you'd do differently, or the debt it created?", c:CAT.UGLY}
+      ], followUp:"Push: 'did that debt ever come due? What happened?' Answers that end at the decision, with no aftermath, sound rehearsed." },
+    { tag:"Judgment & Collaboration", text:"How do you ensure collaboration across RevOps, Marketing Ops, and Sales stays functional?",
+      checklist:[
+        {t:"Did you name a specific mechanism (a ritual, a doc, an owner), not just 'communication'?", c:CAT.SPEC},
+        {t:"Did you address what happens when teams disagree on priority?", c:CAT.UGLY},
+        {t:"Did you avoid a purely process answer with no example attached?", c:CAT.SPEC}
+      ], followUp:"Push: 'tell me about a specific disagreement and how it actually got resolved.' If there isn't one, the process probably hasn't been tested yet." }
+  ];
+
+  let session = null; // {mode, queue, index, transcript}
+  let timerInterval = null;
+  let secondsLeft = 300;
+  let selectedDuration = 300;
+  let quickCount = 0;
+
+  const el = id => document.getElementById(id);
+  function showScreen(id){
+    ['modeScreen','qScreen','reportScreen'].forEach(s => el(s).classList.toggle('show', s === id));
+  }
+  function formatTime(s){ return Math.floor(s/60).toString().padStart(2,'0') + ':' + (s%60).toString().padStart(2,'0'); }
+  function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+  function resetQuestionUI(){
+    clearInterval(timerInterval);
+    secondsLeft = selectedDuration;
+    el('clock').textContent = formatTime(secondsLeft);
+    el('clock').classList.remove('warn');
+    el('answerBox').value = '';
+    el('checklist').classList.remove('show');
+    el('followup').classList.remove('show');
+    el('advanceBtn').disabled = true;
+  }
+
+  function renderDots(){
+    if(session.mode !== 'full'){ el('dots').innerHTML=''; return; }
+    el('dots').innerHTML = session.queue.map((q,i) => {
+      let cls = 'dot';
+      if(i < session.index) cls += ' done';
+      else if(i === session.index) cls += ' current';
+      return '<span class="'+cls+'"></span>';
+    }).join('');
+  }
+
+  function renderQuestion(){
+    const q = session.queue[session.index];
+    el('tally').textContent = session.mode === 'full'
+      ? 'Question ' + (session.index+1) + ' of ' + session.queue.length
+      : 'Questions practiced: ' + quickCount;
+    renderDots();
+    el('qTag').textContent = q.tag;
+    el('qText').textContent = q.text;
+    el('checklistItems').innerHTML = '';
+    q.checklist.forEach((item, idx) => {
+      const row = document.createElement('div');
+      row.className = 'cl-item';
+      row.dataset.idx = idx;
+      row.innerHTML = '<span class="cl-box"></span><span class="cl-text">' + item.t + '</span>';
+      row.addEventListener('click', () => row.querySelector('.cl-box').classList.toggle('checked'));
+      el('checklistItems').appendChild(row);
+    });
+    el('followupText').textContent = q.followUp || '';
+    resetQuestionUI();
+    showScreen('qScreen');
+  }
+
+  function startFull(){
+    const picks = shuffle(techPool).slice(0,2);
+    session = { mode:'full', queue:[stage1, stage2, stage3, ...picks], index:0, transcript:[] };
+    renderQuestion();
+  }
+  function startQuick(){
+    quickCount = 0;
+    const all = [stage1, stage2, stage3, ...techPool];
+    const q = all[Math.floor(Math.random()*all.length)];
+    session = { mode:'quick', queue:[q], index:0, transcript:[] };
+    renderQuestion();
+  }
+
+  el('fullModeCard').addEventListener('click', startFull);
+  el('quickModeCard').addEventListener('click', startQuick);
+
+  el('timerRow').querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      el('timerRow').querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedDuration = parseInt(btn.dataset.secs,10);
+      secondsLeft = selectedDuration;
+      el('clock').textContent = formatTime(secondsLeft);
+      el('clock').classList.remove('warn');
+      clearInterval(timerInterval);
+    });
+  });
+
+  el('startTimerBtn').addEventListener('click', () => {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      secondsLeft--;
+      if(secondsLeft <= 30) el('clock').classList.add('warn');
+      if(secondsLeft <= 0){ clearInterval(timerInterval); secondsLeft = 0; }
+      el('clock').textContent = formatTime(secondsLeft);
+    }, 1000);
+  });
+
+  el('doneBtn').addEventListener('click', () => {
+    clearInterval(timerInterval);
+    el('checklist').classList.add('show');
+    el('followup').classList.add('show');
+    el('advanceBtn').disabled = false;
+  });
+
+  el('advanceBtn').addEventListener('click', () => {
+    const q = session.queue[session.index];
+    const checks = Array.from(el('checklistItems').querySelectorAll('.cl-item')).map((row,idx) => ({
+      t: q.checklist[idx].t, c: q.checklist[idx].c, checked: row.querySelector('.cl-box').classList.contains('checked')
+    }));
+    session.transcript.push({ tag:q.tag, question:q.text, answer: el('answerBox').value.trim(), checks, followUp:q.followUp });
+
+    if(session.mode === 'quick'){
+      quickCount++;
+      const all = [stage1, stage2, stage3, ...techPool];
+      session.queue[0] = all[Math.floor(Math.random()*all.length)];
+      renderQuestion();
+    } else {
+      session.index++;
+      if(session.index < session.queue.length){ renderQuestion(); }
+      else { showReport(); }
+    }
+  });
+
+  function showReport(){
+    const totals = { spec:{c:0,t:0}, ugly:{c:0,t:0}, fuzzy:{c:0,t:0} };
+    session.transcript.forEach(entry => entry.checks.forEach(item => {
+      totals[item.c].t++;
+      if(item.checked) totals[item.c].c++;
+    }));
+    const body = el('reportBody');
+    body.innerHTML = '';
+    ['spec','ugly','fuzzy'].forEach(cat => {
+      const {c,t} = totals[cat];
+      const pct = t ? Math.round((c/t)*100) : 0;
+      const wrap = document.createElement('div');
+      wrap.className = 'report-item';
+      wrap.innerHTML =
+        '<div class="report-label"><span>'+CAT_LABEL[cat].split(' — ')[0]+'</span><span>'+c+' / '+t+'</span></div>'+
+        '<div class="report-bar-track"><div class="report-bar-fill" style="width:'+pct+'%;"></div></div>'+
+        '<div class="report-note">'+CAT_LABEL[cat].split(' — ')[1]+'</div>';
+      body.appendChild(wrap);
+    });
+
+    const weakest = ['spec','ugly','fuzzy'].reduce((a,b) => {
+      const pa = totals[a].t ? totals[a].c/totals[a].t : 1;
+      const pb = totals[b].t ? totals[b].c/totals[b].t : 1;
+      return pb < pa ? b : a;
+    });
+    const weakLabel = { spec:'getting specific instead of speaking in vibes', ugly:'naming failure modes and fallback logic instead of only the clean path', fuzzy:'structuring an ambiguous problem before jumping to a solution' }[weakest];
+    el('reportSummary').textContent = 'Across this session, your softest area was ' + weakLabel + '. That is the single thing worth drilling again before your next real interview — it is the exact pattern Clay says separates candidates who get filtered out.';
+
+    showScreen('reportScreen');
+  }
+
+  el('copyBtn').addEventListener('click', () => {
+    let out = 'MOCK INTERVIEW TRANSCRIPT — ' + new Date().toLocaleDateString() + '\n\n';
+    session.transcript.forEach((entry, i) => {
+      out += '— ' + entry.tag + ' —\n';
+      out += 'Q: ' + entry.question + '\n\n';
+      out += 'My answer:\n' + (entry.answer || '(left blank)') + '\n\n';
+      out += 'Self-grade:\n';
+      entry.checks.forEach(item => { out += (item.checked ? '[x] ' : '[ ] ') + item.t + '\n'; });
+      out += '\nFollow-up to prep for: ' + entry.followUp + '\n\n\n';
+    });
+    navigator.clipboard.writeText(out).then(() => {
+      el('copyBtn').textContent = 'Copied ✓';
+      setTimeout(() => { el('copyBtn').textContent = 'Copy Full Transcript'; }, 2000);
+    }).catch(() => { alert('Copy failed — select and copy manually.'); });
+  });
+
+  el('restartBtn').addEventListener('click', () => { session = null; showScreen('modeScreen'); });
+
+  el('dateStamp').textContent = new Date().toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+</script>
+
+</body>
+</html>
