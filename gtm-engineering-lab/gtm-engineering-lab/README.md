@@ -1,45 +1,30 @@
-# GTM Engineering Lab
+# Week 07 — The 30-Day Plan
 
-A public, evolving library for people who want to learn AI, sales, and GTM engineering **by building**, not by reading threads and bookmarking them forever.
+I landed a GTM Engineering role in under 30 days. This is the exact structure I used, broken into the four things that actually get you hired:
 
-This isn't a one-time content drop. It's a working repo that grows weekly, built in the open, with templates, prompts, workflows, and code that anyone can use, fork, or improve. If you're the kind of person who learns by shipping something small every day, this is your library.
+1. **Your resume** — the bullet formula and the section order that gets you past the first skim.
+2. **Your portfolio** — what to learn first (with real free resources), what to build with it, and how to write it up so it gets you hired.
+3. **Getting in front of the right person** — the 3 real paths in (warm referral, direct outreach, applying with proof attached), not just cold email.
+4. **Your interview answers** — a 4-part structure, worked examples, and a real bank of sourced GTM/RevOps interview questions to practice on.
 
-## What this is
+## Get the interactive version
 
-- A collection of ready-to-use templates, scripts, and patterns for GTM/RevOps engineering
-- A running log of what's been built, what broke, and what was learned
-- A place to contribute your own work and get feedback from other builders
-- Not a course, not a paid product, not a "drop and disappear" repo
+Everything above is built as a track-aware, interactive walkthrough (it asks where you sit technically and tailors the whole plan to that): [The 30-Day Plan](https://claude.ai/artifact/YUBYVUygK8UY26qUFWUxwM)
 
-## How it's organized
+## The free resources referenced in the portfolio module
 
-| Folder | What's in it |
-|---|---|
-| [`technical-debt/`](./technical-debt) | Templates and scorecards for auditing GTM systems — decision logs, mistake logs, debt scorecards, workflow docs |
-| [`cold-email/`](./cold-email) | Copy, sequences, deliverability guides, and scripts |
-| [`prompting/`](./prompting) | Prompt libraries and patterns organized by use case |
-| [`automation-workflows/`](./automation-workflows) | Clay, n8n, Zapier, and Make recipes for GTM automation |
-| [`ai-agents/`](./ai-agents) | Agent design patterns and example builds |
-| [`sql/`](./sql) | GTM/RevOps queries and schema examples |
-| [`community/`](./community) | Weekly update log, contributor list, public wins/fails log |
-| [`resources/`](./resources) | Curated external tools, reading, and reference links |
+**Not technical (strategy, messaging, positioning)**
+- [HubSpot Academy — Content Marketing Certification](https://academy.hubspot.com/courses/content-marketing) (free)
+- [HubSpot Academy — Digital Marketing Certification](https://academy.hubspot.com/courses/digital-marketing) (free)
 
-Each top-level folder has its own README explaining what belongs there and what "good" looks like.
+**Mid-technical (connecting tools)**
+- [freeCodeCamp — APIs for Beginners](https://www.freecodecamp.org/news/apis-for-beginners/) (free)
+- [Clay University — the HTTP API lesson](https://www.clay.com/university/lesson/http-api-clay-101) (free)
 
-## How to contribute
+**Very technical (systems and data)**
+- [SQLZoo — the JOIN tutorial](https://sqlzoo.net/wiki/The_JOIN_operation) (free)
+- [Google BigQuery Sandbox](https://docs.cloud.google.com/bigquery/docs/sandbox) (free, no card required)
 
-Short version: fork it, add your thing following the naming convention, open a PR. Full details, quality bar, and template usage are in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+## Real interview questions to practice on
 
-## Naming convention
-
-- Folders and files: lowercase, kebab-case (`cold-email-sequence-saas-trial.md`, not `ColdEmailSequenceSaaSTrial.md`)
-- Templates live in a `templates/` subfolder inside their category; filled-in examples live in `examples/`
-- Dated entries (logs, weekly updates) use `YYYY-MM-DD` prefixes, e.g. `2026-07-15-mistake-log-clay-enrichment.md`
-
-## Weekly update log
-
-Every week, something new gets added, a template, a workflow, a prompt set, or a real example from a live build. The running log lives in [`community/weekly-updates.md`](./community/weekly-updates.md). Star/watch the repo if you want to follow along, or check that file weekly.
-
-## License
-
-Everything here is free to use, fork, and adapt. Attribution appreciated, not required. (Swap in whatever license, MIT recommended for max reuse... before you publish.)
+Sourced from published GTM/RevOps hiring guides ([Sloane Staffing](https://www.sloane-staffing.com/insights/gtm-engineer-interview-questions-job-description-template), [Fullcast](https://www.fullcast.com/content/revops-interview-questions/)) — the full, track-sorted bank with the practice tool is in the interactive plan above.
