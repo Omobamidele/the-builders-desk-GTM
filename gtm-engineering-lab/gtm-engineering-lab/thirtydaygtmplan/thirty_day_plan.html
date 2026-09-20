@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 30-Day Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF9F7; --panel:#FFFFFF; --panel-2:#F3F0EB;
+    --ink:#211A14; --ink-soft:#7A6F62;
+    --accent:#8A5A2B; --accent-ink:#FFFFFF; --accent-tint:#F3E7D8;
+    --line:#E9E3D9; --shadow:0 1px 2px rgba(40,26,10,0.04), 0 4px 14px rgba(40,26,10,0.06);
+    --radius:14px; --good:#2F7A4F; --good-tint:#E7F3EC;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#16130F; --panel:#211C16; --panel-2:#28221B;
+      --ink:#F2ECE3; --ink-soft:#B0A392;
+      --accent:#D19A5C; --accent-ink:#16130F; --accent-tint:rgba(209,154,92,0.14);
+      --line:#3A322A; --shadow:none; --good-tint:rgba(47,122,79,0.16);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#16130F; --panel:#211C16; --panel-2:#28221B;
+    --ink:#F2ECE3; --ink-soft:#B0A392;
+    --accent:#D19A5C; --accent-ink:#16130F; --accent-tint:rgba(209,154,92,0.14);
+    --line:#3A322A; --shadow:none; --good-tint:rgba(47,122,79,0.16);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ background:var(--bg); font-family:'Inter', -apple-system, sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .screen{ display:none; opacity:0; transition:opacity .25s ease; }
+  .screen.show{ display:block; opacity:1; }
+  .center-wrap{ max-width:600px; margin:0 auto; padding:64px 24px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:0.06em; color:var(--ink-soft); font-weight:700; text-transform:uppercase; margin-bottom:16px; }
+  h1{ font-size:clamp(30px,5.5vw,42px); line-height:1.15; font-weight:800; margin:0 0 16px; letter-spacing:-0.02em; }
+  .sub{ font-size:16px; color:var(--ink-soft); margin:0 0 8px; line-height:1.65; max-width:52ch; }
+  .sub b{ color:var(--ink); font-weight:700; }
+  button{ font-family:inherit; cursor:pointer; }
+  .primary-btn{ background:var(--accent); color:var(--accent-ink); border:none; padding:16px 26px; border-radius:11px; font-size:15px; font-weight:700; width:100%; margin-top:22px; }
+  .q-progress{ display:flex; gap:6px; margin:26px 0 30px; }
+  .q-progress span{ flex:1; height:4px; border-radius:4px; background:var(--line); }
+  .q-progress span.done{ background:var(--accent); }
+  .q-num{ font-size:12.5px; font-weight:700; color:var(--accent); letter-spacing:0.04em; margin-bottom:10px; text-transform:uppercase; }
+  .q-text{ font-size:22px; font-weight:800; margin-bottom:24px; line-height:1.35; }
+  .q-opt{ display:block; width:100%; text-align:left; background:var(--panel); border:1.5px solid var(--line); color:var(--ink); padding:17px 19px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; margin-bottom:10px; box-shadow:var(--shadow); }
+  .q-opt:hover{ border-color:var(--accent); }
+  .q-opt-sub{ font-size:13px; font-weight:400; color:var(--ink-soft); margin-top:4px; }
+  .backlink{ display:inline-block; margin-top:8px; font-size:13px; color:var(--ink-soft); cursor:pointer; }
+
+  #app{ display:none; }
+  #app.show{ display:flex; }
+  .sidebar{ width:270px; flex-shrink:0; background:var(--panel-2); border-right:1px solid var(--line); padding:30px 22px; position:sticky; top:0; height:100vh; overflow-y:auto; }
+  .sb-brand{ font-size:11.5px; letter-spacing:0.06em; color:var(--ink-soft); font-weight:700; text-transform:uppercase; margin-bottom:4px; }
+  .sb-title{ font-size:18px; font-weight:800; margin-bottom:14px; }
+  .sb-summary{ font-size:12.5px; color:var(--ink-soft); line-height:1.6; margin-bottom:22px; padding-bottom:22px; border-bottom:1px solid var(--line); }
+  .sb-nav-item{ display:flex; gap:12px; align-items:center; padding:12px 12px; border-radius:10px; cursor:pointer; margin-bottom:3px; }
+  .sb-nav-item:hover{ background:var(--panel); }
+  .sb-nav-item.active{ background:var(--accent-tint); }
+  .sb-num{ width:27px; height:27px; border-radius:50%; border:1.5px solid var(--line); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; background:var(--panel); }
+  .sb-nav-item.active .sb-num{ border-color:var(--accent); color:var(--accent); }
+  .sb-nav-item.done .sb-num{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+  .sb-nav-text{ font-size:14px; font-weight:600; }
+  .sb-restart{ display:block; margin-top:20px; font-size:12px; color:var(--ink-soft); background:none; border:none; padding:0; text-decoration:underline; }
+
+  .main{ flex:1; padding:60px 64px 100px; max-width:760px; }
+  .mod-eyebrow{ font-size:12.5px; letter-spacing:0.05em; color:var(--accent); font-weight:700; text-transform:uppercase; margin-bottom:10px; }
+  .mod-title{ font-size:clamp(24px,4vw,32px); font-weight:800; margin:0 0 14px; }
+  .mod-desc{ font-size:15.5px; line-height:1.7; color:var(--ink-soft); margin-bottom:28px; max-width:62ch; }
+
+  .section{ margin-bottom:30px; }
+  .section-title{ font-size:17px; font-weight:800; margin-bottom:12px; }
+  .section-body{ font-size:15px; line-height:1.75; color:var(--ink); }
+  .section-body p{ margin:0 0 12px; }
+
+  .struct-list{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; margin-bottom:22px; }
+  .struct-item{ display:flex; gap:16px; padding:18px 22px; border-bottom:1px solid var(--line); }
+  .struct-item:last-child{ border-bottom:none; }
+  .struct-num{ width:30px; height:30px; border-radius:50%; background:var(--accent-tint); color:var(--accent); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; }
+  .struct-name{ font-size:15px; font-weight:700; margin-bottom:4px; }
+  .struct-desc{ font-size:13.5px; color:var(--ink-soft); line-height:1.6; }
+
+  .formula-box{ background:var(--accent-tint); border-radius:12px; padding:18px 20px; margin-bottom:18px; }
+  .formula-label{ font-size:11px; letter-spacing:0.06em; color:var(--accent); font-weight:700; text-transform:uppercase; margin-bottom:8px; }
+  .formula-text{ font-size:15px; font-weight:700; line-height:1.6; }
+
+  .example-card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px; margin-bottom:14px; box-shadow:var(--shadow); }
+  .example-label{ font-size:11px; letter-spacing:0.06em; color:var(--ink-soft); font-weight:700; text-transform:uppercase; margin-bottom:10px; }
+  .example-text{ font-size:14.5px; line-height:1.75; white-space:pre-line; }
+  .example-text b{ color:var(--accent); }
+
+  .mistake-list{ list-style:none; margin:0; padding:0; }
+  .mistake-list li{ display:flex; gap:10px; padding:9px 0; font-size:14px; line-height:1.6; }
+  .mistake-list li::before{ content:"\2717"; color:#B5453A; font-weight:800; flex-shrink:0; }
+
+  .tool-card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:26px; box-shadow:var(--shadow); margin-top:8px; margin-bottom:22px; }
+  .tool-label{ font-size:11.5px; letter-spacing:0.05em; color:var(--accent); font-weight:700; margin-bottom:16px; text-transform:uppercase; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:13px; font-weight:600; margin-bottom:6px; }
+  .field input, .field select, .field textarea{ width:100%; font-family:inherit; font-size:14.5px; padding:11px 13px; border:1.5px solid var(--line); border-radius:9px; background:var(--bg); color:var(--ink); }
+  .field textarea{ resize:vertical; }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:none; border-color:var(--accent); }
+  .out-box{ margin-top:14px; padding:16px 18px; background:var(--good-tint); border-radius:10px; font-size:14.5px; font-weight:600; line-height:1.7; }
+  .link-pill{ color:var(--accent); font-weight:700; font-size:13px; text-decoration:none; }
+  .link-pill:hover{ text-decoration:underline; }
+  .small-btn{ background:var(--accent); border:none; color:var(--accent-ink); padding:10px 20px; border-radius:9px; font-size:13.5px; font-weight:700; margin-top:4px; }
+  .small-btn:hover{ opacity:0.9; }
+
+  .nav-row{ display:flex; justify-content:space-between; margin-top:38px; }
+  .nav-btn{ background:var(--panel); border:1.5px solid var(--line); color:var(--ink); padding:12px 22px; border-radius:10px; font-size:14px; font-weight:600; }
+  .nav-btn:hover{ border-color:var(--accent); }
+  .nav-btn:disabled{ opacity:0.35; cursor:default; }
+  .nav-btn.primary{ background:var(--accent); color:var(--accent-ink); border:none; }
+
+  @media (max-width:820px){
+    #app.show{ flex-direction:column; }
+    .sidebar{ width:100%; position:relative; height:auto; }
+    .main{ padding:36px 22px 80px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="screen show" id="screen-intro">
+  <div class="center-wrap">
+    <div class="eyebrow">Builder's Desk · Week 07</div>
+    <h1>The 30-Day Plan</h1>
+    <p class="sub">I landed a GTM Engineering role in under 30 days. This is the exact structure I used, for the four things that actually get you hired: <b>your resume, your portfolio, getting in front of the right person, and your interview answers.</b></p>
+    <button class="primary-btn" id="startBtn">Start</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-quiz">
+  <div class="center-wrap">
+    <div class="eyebrow">Builder's Desk · Week 07</div>
+    <div class="q-progress" id="qProgress"></div>
+    <div id="qCard"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="sidebar">
+    <div class="sb-brand">Builder's Desk · Week 07</div>
+    <div class="sb-title">The 30-Day Plan</div>
+    <div class="sb-summary" id="sbSummary"></div>
+    <div id="sbNav"></div>
+    <button class="sb-restart" id="restartBtn">Start over</button>
+  </div>
+  <div class="main">
+    <div class="mod-eyebrow" id="modEyebrow"></div>
+    <h2 class="mod-title" id="modTitle"></h2>
+    <p class="mod-desc" id="modDesc"></p>
+    <div id="modToolArea"></div>
+    <div class="nav-row">
+      <button class="nav-btn" id="prevBtn">Previous</button>
+      <button class="nav-btn primary" id="nextBtn">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    { key:"track", text:"Where do you want to sit technically?", options:[
+      { val:"basic", label:"Not technical", sub:"Strategy, messaging, positioning" },
+      { val:"mid", label:"Mid-technical", sub:"Comfortable connecting tools together" },
+      { val:"high", label:"Very technical", sub:"I want to design real systems" }
+    ]},
+    { key:"background", text:"What's your closest background?", options:[
+      { val:"sales", label:"Sales, SDR, or AE" }, { val:"tech", label:"Technical or engineering" },
+      { val:"ops", label:"Marketing or RevOps" }, { val:"none", label:"None of these yet" }
+    ]},
+    { key:"time", text:"How much time can you actually give this per day?", options:[
+      { val:"low", label:"30 minutes" }, { val:"mid", label:"1 to 2 hours" }, { val:"high", label:"3+ hours" }
+    ]}
+  ];
+  let currentQ = 0;
+  const answers = {};
+  function renderProgress(){ document.getElementById('qProgress').innerHTML = questions.map((q,i) => '<span class="' + (i < currentQ ? 'done' : '') + '"></span>').join(''); }
+  function renderQuestion(){
+    renderProgress();
+    const q = questions[currentQ];
+    const card = document.getElementById('qCard');
+    card.innerHTML = '<div class="q-num">Question ' + (currentQ+1) + ' of ' + questions.length + '</div><div class="q-text">' + q.text + '</div>' +
+      q.options.map(opt => '<button class="q-opt" data-val="' + opt.val + '"><div>' + opt.label + '</div>' + (opt.sub ? '<div class="q-opt-sub">' + opt.sub + '</div>' : '') + '</button>').join('') +
+      (currentQ > 0 ? '<span class="backlink" id="backLink">back</span>' : '');
+    card.querySelectorAll('.q-opt').forEach(btn => btn.addEventListener('click', () => {
+      answers[q.key] = btn.dataset.val;
+      if(currentQ < questions.length - 1){ currentQ++; renderQuestion(); } else { launchApp(); }
+    }));
+    const back = document.getElementById('backLink');
+    if(back) back.addEventListener('click', () => { currentQ--; renderQuestion(); });
+  }
+  document.getElementById('startBtn').addEventListener('click', () => {
+    document.getElementById('screen-intro').classList.remove('show');
+    document.getElementById('screen-quiz').classList.add('show');
+    currentQ = 0; renderQuestion();
+  });
+
+  let progress = { 1:false, 2:false, 3:false, 4:false };
+  let currentWeek = 1;
+  let interviewQIndex = 0;
+  function launchApp(){
+    document.getElementById('screen-quiz').classList.remove('show');
+    document.getElementById('app').classList.add('show');
+    const trackLabel = { basic:"not technical", mid:"mid-technical", high:"very technical" }[answers.track];
+    const timeLabel = { low:"30 min/day", mid:"1-2 hrs/day", high:"3+ hrs/day" }[answers.time];
+    const bgLabel = answers.background === 'none' ? 'a standing start' : answers.background;
+    document.getElementById('sbSummary').textContent = 'From ' + bgLabel + ', aiming ' + trackLabel + ', ' + timeLabel + '.';
+    currentWeek = 1; renderApp();
+  }
+  const weekTitles = { 1:'Structure Your Resume', 2:'What To Build For Your Portfolio', 3:'Get In Front Of The Right Person', 4:'Structure An Interview Answer' };
+  function renderSidebar(){
+    const nav = document.getElementById('sbNav'); nav.innerHTML = '';
+    for(let i=1;i<=4;i++){
+      const item = document.createElement('div');
+      item.className = 'sb-nav-item' + (i===currentWeek?' active':'') + (progress[i]?' done':'');
+      item.innerHTML = '<span class="sb-num">' + (progress[i] ? '&#10003;' : i) + '</span><span class="sb-nav-text">Week ' + i + '</span>';
+      item.addEventListener('click', () => { currentWeek = i; renderApp(); });
+      nav.appendChild(item);
+    }
+  }
+  function renderApp(){
+    renderSidebar();
+    document.getElementById('modEyebrow').textContent = 'Week ' + currentWeek + ' of 4';
+    document.getElementById('modTitle').textContent = weekTitles[currentWeek];
+    document.getElementById('prevBtn').disabled = currentWeek === 1;
+    document.getElementById('nextBtn').textContent = currentWeek === 4 ? 'Finish' : 'Next';
+    if(currentWeek === 1) renderWeek1();
+    else if(currentWeek === 2) renderWeek2();
+    else if(currentWeek === 3) renderWeek3();
+    else renderWeek4();
+    window.scrollTo(0,0);
+  }
+
+  function structList(title, items){
+    return '<div class="section"><div class="section-title">' + title + '</div><div class="struct-list">' +
+      items.map((it,i) => '<div class="struct-item"><div class="struct-num">' + (i+1) + '</div><div><div class="struct-name">' + it[0] + '</div><div class="struct-desc">' + it[1] + '</div></div></div>').join('') +
+      '</div></div>';
+  }
+  function section(title, body){ return '<div class="section"><div class="section-title">' + title + '</div>' + body + '</div>'; }
+  function formula(text){ return '<div class="formula-box"><div class="formula-label">The Formula</div><div class="formula-text">' + text + '</div></div>'; }
+  function example(label, text){ return '<div class="example-card"><div class="example-label">' + label + '</div><div class="example-text">' + text + '</div></div>'; }
+  function mistakes(list){ return '<ul class="mistake-list">' + list.map(m => '<li>' + m + '</li>').join('') + '</ul>'; }
+  function tool(label, inner){ return '<div class="tool-card"><div class="tool-label">' + label + '</div>' + inner + '</div>'; }
+  function field(id,label){ return '<div class="field"><label>' + label + '</label><input type="text" id="' + id + '"></div>'; }
+  function fieldTA(id,label,rows){ return '<div class="field"><label>' + label + '</label><textarea id="' + id + '" rows="' + (rows||4) + '"></textarea></div>'; }
+  function smallBtn(id,label){ return '<button class="small-btn" id="' + id + '" type="button">' + label + '</button>'; }
+  function outbox(id){ return '<div class="out-box" id="' + id + '" style="display:none;"></div>'; }
+  function val(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  function listen(id, fn){ document.getElementById(id).addEventListener('input', fn); }
+  function showOut(id, html){ const out = document.getElementById(id); out.style.display = 'block'; out.innerHTML = html; }
+
+  /* ===================== WEEK 1: RESUME ===================== */
+  const resumeExamples = {
+    basic: [
+      "Built and launched a 3-email nurture sequence for inbound leads using HubSpot workflows, increasing demo booking rate by 18% over 2 months.",
+      "Redesigned the lead qualification form to cut required fields from 12 to 5, raising form completion rate by 24%.",
+      "Wrote and tested 4 subject line variants for a re-engagement campaign, lifting open rate from 14% to 22%."
+    ],
+    mid: [
+      "Automated lead enrichment connecting Clay to Salesforce via API, cutting manual data entry by 6 hours per week across the SDR team.",
+      "Built a Zapier workflow syncing form fills to Slack in real time, cutting average first response time from 4 hours to 12 minutes.",
+      "Connected HubSpot and Salesforce with a scheduled sync job, eliminating a recurring data mismatch that had misrouted 15% of leads."
+    ],
+    high: [
+      "Built a Python-based lead scoring model on BigQuery warehouse data, improving SQL-to-opportunity conversion by 12% in one quarter.",
+      "Wrote a multi-touch attribution query across 4 data sources, reallocating 20% of ad spend to the highest converting channel.",
+      "Migrated a manual reporting process into a scheduled SQL pipeline, cutting weekly reporting time from 5 hours to 20 minutes."
+    ]
+  };
+  function renderWeek1(){
+    document.getElementById('modDesc').textContent = "Most resumes list tools. The ones that get interviews list outcomes, and get past the software that reads them before a human ever does.";
+    const area = document.getElementById('modToolArea');
+    area.innerHTML =
+      structList('The 5 Sections, In This Order', [
+        ['Header & Positioning','Name, contact, and one line that is not just your job title. Example: "GTM Engineer, Automation & Revenue Systems."'],
+        ['Summary, 2 lines max','What you build, and for what outcome. Not a biography.'],
+        ['Technical Skills, grouped','Group by category, not one long list: No-code/Low-code, Scripting, Systems/Warehouses. Only list what you can defend in an interview.'],
+        ['Experience, using the formula below','Every bullet follows the same formula. No exceptions.'],
+        ['Projects / Portfolio Link','One line per project, link to the real thing, not a description of it.']
+      ]) +
+      section('The Bullet Formula', formula('[Action verb] + [what you built] + [tool or method] + [specific result, a number], and lead with the result, not the tool') +
+        resumeExamples[answers.track].map((ex,i) => example('Example ' + (i+1), ex)).join('')) +
+      section('Get Past The Filter First', '<div class="section-body"><p>Up to 75% of resumes are rejected by applicant tracking software before a human ever opens them. The fixes are mechanical, not creative.</p></div>' +
+        structList('', [
+          ['Mirror the job posting language','If the posting says "pipeline generation," write that, not a synonym like "lead gen."'],
+          ['No tables, columns, or text boxes','Most parsers read left to right, top to bottom, and scramble anything else.'],
+          ['Use standard section headers','"Experience" and "Skills," not "My Journey" or "What I Bring."'],
+          ['Save as a text-selectable file','Never a scanned image. If you cannot highlight the text, the software cannot read it either.']
+        ])) +
+      section('The Mistakes That Get A Resume Skipped', mistakes([
+        'Tools listed with no outcome attached ("Experienced with Clay, HubSpot, Zapier")',
+        'Organizing your resume around tool names instead of what you achieved with them',
+        '"Responsible for..." instead of an action verb',
+        'Zero numbers anywhere on the page',
+        'Longer than one page with under 5 years of experience'
+      ])) +
+      section('Try It: Bullet Audit', tool('Paste up to 3 bullets, one per line',
+        fieldTA('r_bullets','Your bullets',4) + smallBtn('r_check','Check Them') + outbox('rout'))) +
+      section('Try It: Keyword Matcher', tool('Compare your resume to a real posting',
+        fieldTA('k_posting','Paste the job posting',4) + fieldTA('k_resume','Paste your resume text',4) + smallBtn('k_check','Compare') + outbox('kout')));
+
+    document.getElementById('r_check').addEventListener('click', () => {
+      const lines = val('r_bullets').split('\n').map(l => l.trim()).filter(Boolean);
+      if(!lines.length){ showOut('rout', 'Paste at least one bullet above.'); return; }
+      const weakStarters = /^(responsible for|worked on|helped with|assisted|involved in)/i;
+      const toolNames = /^(clay|zapier|hubspot|salesforce|sql|python|bigquery|slack|notion|airtable|make\.com|n8n|github)/i;
+      const outcomeWords = /result|increas|decreas|drop|reduc|improv|grew|cut |sav|lift|rose|rais|migrat/i;
+      const html = lines.map((line,i) => {
+        const checks = [
+          { pass: /\d/.test(line), label:'Has a number' },
+          { pass: !weakStarters.test(line), label:'Starts with a real action verb' },
+          { pass: outcomeWords.test(line), label:'States an outcome' },
+          { pass: !toolNames.test(line), label:'Leads with what you did, not the tool name' }
+        ];
+        const score = checks.filter(c => c.pass).length;
+        return '<div style="margin-bottom:10px;"><b>Bullet ' + (i+1) + ': ' + score + ' of 4</b><br>' + checks.map(c => (c.pass ? '&#10003; ' : '&#10007; ') + c.label).join('<br>') + '</div>';
+      }).join('');
+      showOut('rout', html);
+    });
+
+    const STOPWORDS = ['the','and','for','with','you','your','are','that','this','will','have','from','our','their','who','what','role','job','team','work','about','into','also','can','all','has','more','than','they','them','over','out','per','not','who','been','were','was','but','not'];
+    document.getElementById('k_check').addEventListener('click', () => {
+      const posting = val('k_posting').toLowerCase();
+      const resumeTxt = val('k_resume').toLowerCase();
+      if(!posting || !resumeTxt){ showOut('kout', 'Paste both the posting and your resume text above.'); return; }
+      const words = posting.match(/[a-z][a-z\-]{3,}/g) || [];
+      const freq = {};
+      words.forEach(w => { if(STOPWORDS.indexOf(w) === -1) freq[w] = (freq[w]||0) + 1; });
+      const topWords = Object.keys(freq).sort((a,b) => freq[b]-freq[a]).slice(0,15);
+      const missing = topWords.filter(w => resumeTxt.indexOf(w) === -1);
+      const present = topWords.filter(w => resumeTxt.indexOf(w) !== -1);
+      showOut('kout', '<b>' + present.length + ' of ' + topWords.length + ' key terms found in your resume.</b><br>Missing: ' + (missing.length ? missing.join(', ') : 'none, strong match'));
+    });
+  }
+
+  /* ===================== WEEK 2: PORTFOLIO ===================== */
+  const portfolioExamples = {
+    basic: "Result: Average lead response time dropped from 4 hours to under 10 minutes.\nThe Problem: Our sales team spent 2+ hours a day manually copying website form fills into HubSpot, delaying follow-up.\nWhat I Built: A no-code Zapier automation connecting the form tool directly to HubSpot, with an instant Slack alert to the AE.\nTools: Zapier, HubSpot, Slack.",
+    mid: "Result: Rep time spent manually researching leads dropped by 70%, reallocated to selling.\nThe Problem: Leads were entering the CRM with no firmographic data, so reps were prioritizing blind.\nWhat I Built: An enrichment pipeline using Clay's API to pull company data on every new lead, scored and written back to Salesforce automatically.\nTools: Clay, Salesforce API, a scheduled script.",
+    high: "Result: Caught and reallocated budget from an underperforming channel 3 weeks faster than the old process.\nThe Problem: Attribution was manual and updated once a week, too slow to catch underperforming channels early.\nWhat I Built: A SQL-based multi-touch attribution model running on a warehouse, refreshed daily, feeding a live dashboard.\nTools: BigQuery, scheduled SQL jobs, a BI dashboard."
+  };
+  const skillPaths = {
+    basic: [
+      ["Positioning and messaging fundamentals","How to describe a product so the right buyer gets it in one sentence.","https://academy.hubspot.com/courses/content-marketing","HubSpot Academy, free Content Marketing Certification"],
+      ["Running a GTM motion end to end","How a campaign, a funnel, and a launch actually fit together.","https://academy.hubspot.com/courses/digital-marketing","HubSpot Academy, free Digital Marketing Certification"]
+    ],
+    mid: [
+      ["How APIs actually work","The foundation under every no-code integration you will ever build.","https://www.freecodecamp.org/news/apis-for-beginners/","freeCodeCamp, APIs for Beginners"],
+      ["Connecting tools without writing a backend","How Clay pulls, enriches, and pushes data across your GTM stack.","https://www.clay.com/university/lesson/http-api-clay-101","Clay University, the HTTP API lesson"]
+    ],
+    high: [
+      ["SQL joins","The one skill that unlocks almost every warehouse question a GTM team will ask you.","https://sqlzoo.net/wiki/The_JOIN_operation","SQLZoo, the JOIN tutorial"],
+      ["Querying a real warehouse","Practice on an actual database, not a toy dataset.","https://docs.cloud.google.com/bigquery/docs/sandbox","Google BigQuery Sandbox, free, no card required"]
+    ]
+  };
+  const projectOptions = {
+    basic: [
+      { name:'Intent-Based Prospecting List', brief:'Pick one real trigger, a funding announcement, a new job posting, or a leadership change, and build a list of 10 real companies showing that signal this week. For each one, write the specific reason that signal means they need the product now.' },
+      { name:'Customer Health Snapshot', brief:'Using a realistic mock dataset, or one built from a product you actually use, track usage frequency, support ticket volume, and engagement for 15 accounts, then flag which ones look like they are about to churn and why.' }
+    ],
+    mid: [
+      { name:'Personalized Outreach Automation', brief:'Build a workflow, in Clay or Zapier, that researches a prospect, drafts a personalized opening line, and sequences the follow-up based on whether they open or reply. Use a free trial and 10 real or realistic prospects.' },
+      { name:'Automated Lead Scoring & Routing', brief:'Build a workflow that pulls new leads, enriches them, scores them against a simple ideal customer profile, and routes the highest scorers to a specific rep or channel automatically.' }
+    ],
+    high: [
+      { name:'Revenue Attribution Dashboard', brief:'Connect sample data from marketing, sales, and customer success, a public dataset or a realistic mock export, into one query showing which channel actually produces the highest value customers, not just the most leads.' },
+      { name:'Lead Scoring Model', brief:'Build a scoring model in Python or SQL against a public or mock dataset that predicts which leads are most likely to convert, and validate it against outcomes already in the data.' }
+    ]
+  };
+  function renderWeek2(){
+    document.getElementById('modDesc').textContent = "Proof beats certificates. This is the course: what to learn first, which real project actually gets you noticed, and how to write it up so it gets you hired.";
+    const area = document.getElementById('modToolArea');
+    const paths = skillPaths[answers.track];
+    const projects = projectOptions[answers.track];
+    area.innerHTML =
+      section('Learn This First', '<div class="section-body">' + paths.map(p =>
+        '<div class="struct-list" style="margin-bottom:12px;"><div class="struct-item"><div class="struct-num">&#9679;</div><div><div class="struct-name">' + p[0] + '</div><div class="struct-desc">' + p[1] + '</div><div style="margin-top:6px;"><a class="link-pill" href="' + p[2] + '" target="_blank" rel="noopener">' + p[3] + ' &#8594;</a></div></div></div></div>'
+      ).join('') + '</div>') +
+      section('Then Build One Of These', '<div class="section-body">' + projects.map(p =>
+        '<div class="struct-list" style="margin-bottom:12px;"><div class="struct-item"><div class="struct-num">&#9733;</div><div><div class="struct-name">' + p.name + '</div><div class="struct-desc">' + p.brief + '</div></div></div></div>'
+      ).join('') + '</div>') +
+      section('The Move That Actually Works: Do It For A Real Business', '<div class="section-body"><p>Find a small business or startup doing one of the projects above manually right now, and offer to build it for them, free, no strings attached. One real project for a real business is worth more than any certificate, and it gives you a true case study instead of a hypothetical one.</p></div>') +
+      section('What The Finished Case Study Looks Like', example('Your track: ' + { basic:'Not Technical', mid:'Mid-Technical', high:'Very Technical' }[answers.track], portfolioExamples[answers.track])) +
+      structList('What Every Case Study Needs', [
+        ['Result first, then the problem','Lead with what changed, not with the tool you used.'],
+        ['4 parts, every time','Result, The Problem, What I Built, Tools Used.'],
+        ['2 to 3 of these, not 10','Depth beats breadth. One real story beats five bullet points.']
+      ]) +
+      section('The Mistakes That Get A Portfolio Ignored', mistakes([
+        'A fake, tutorial-style project ("sample e-commerce recommendation engine," "demo CRM integration")',
+        'Describing the work by tool name instead of what it solved',
+        'No number anywhere in the write-up',
+        'More than 3 projects, so nothing gets real depth'
+      ])) +
+      section('Where To Actually Put This', '<div class="section-body"><p>You do not need a custom website. A well-formatted Notion page, a single clean Google Doc, or a GitHub README all work. The structure matters far more than the platform.</p></div>') +
+      section('Try It: Portfolio Audit', tool('Paste one case study you have written',
+        fieldTA('p_case','Your case study',5) + smallBtn('p_check','Check It') + outbox('pout'))) +
+      section('Try It: Project Scoping Worksheet', tool('Turn your chosen project into a real scope',
+        field('sc_data','What data or inputs will you need?') + field('sc_tool','Which tool will you build it in?') + field('sc_deliverable','What is the final deliverable, exactly?') + smallBtn('sc_build','Build My Scope') + outbox('scout'))) +
+      section('Try It: Business Outreach Script', tool('Pitch a real business the free build',
+        field('b_business','What kind of business, or which one?') + field('b_manual','What are they doing manually right now?') + smallBtn('b_build','Build My Pitch') + outbox('bout')));
+
+    document.getElementById('p_check').addEventListener('click', () => {
+      const text = val('p_case');
+      const toolMatch = text.search(/clay|zapier|hubspot|salesforce|sql|python|bigquery/i);
+      const numMatch = text.search(/\d/);
+      const checks = [
+        { pass:/\d/.test(text), label:'Has a specific number' },
+        { pass:/result|increas|decreas|drop|reduc|improv|grew|cut |sav/i.test(text), label:'States a before or after' },
+        { pass:/clay|zapier|hubspot|salesforce|sql|python|bigquery|slack|notion|airtable|api|make\.com|n8n|github/i.test(text), label:'Names a specific tool' },
+        { pass:text.trim().split(/\s+/).filter(Boolean).length >= 40, label:'Long enough to actually explain the work' },
+        { pass: numMatch !== -1 && (toolMatch === -1 || numMatch < toolMatch), label:'Leads with an outcome before naming the tool' }
+      ];
+      const score = checks.filter(c => c.pass).length;
+      showOut('pout', '<b>' + score + ' of 5.</b><br>' + checks.map(c => (c.pass ? '&#10003; ' : '&#10007; ') + c.label).join('<br>'));
+    });
+
+    document.getElementById('sc_build').addEventListener('click', () => {
+      const d = val('sc_data'), t = val('sc_tool'), del = val('sc_deliverable');
+      showOut('scout', (d||t||del) ?
+        'Data needed: ' + (d||'[not set]') + '<br>Built in: ' + (t||'[not set]') + '<br>Deliverable: ' + (del||'[not set]') :
+        'Fill in the fields above to see your scope.');
+    });
+
+    document.getElementById('b_build').addEventListener('click', () => {
+      const biz = val('b_business') || 'your business', manual = val('b_manual') || 'this manually';
+      showOut('bout', 'Hi there, I noticed ' + biz + ' handles ' + manual + ' by hand. I am building my GTM engineering portfolio and would like to build you one working automation for it, free, no strings attached. If it is useful, keep using it. If not, no harm done. Would you be open to a quick call this week?');
+    });
+  }
+
+  /* ===================== WEEK 3: GET IN FRONT OF THE RIGHT PERSON ===================== */
+  const outreachReferral = {
+    basic: "Hi Sam, I noticed you work on the growth team at Acme. I am applying for the GTM Engineer role there and put together a quick audit of your signup email sequence as part of my portfolio. Would you be open to a 10 minute call, or happy to just point me to whoever owns that hiring decision if that is easier.",
+    mid: "Hi Sam, I saw you are on the RevOps team at Acme. I built a small Clay workflow that mirrors a problem I think your team has, alerting a rep when a deal goes quiet. I am applying for the GTM Engineer opening and would love 10 minutes, or an intro to whoever is running that search.",
+    high: "Hi Sam, I noticed you lead data at Acme. I wrote a SQL query against a public dataset that answers a question close to what your attribution model likely deals with. I am applying for the GTM Engineer role and would value 10 minutes, or an intro to whoever owns that hire."
+  };
+  function renderWeek3(){
+    document.getElementById('modDesc').textContent = "Cold email is one way in, not the best one. Here is the real math, the real order of operations, and how to use whichever path fits your situation right now.";
+    const area = document.getElementById('modToolArea');
+    area.innerHTML =
+      section('The Math That Changes Everything', '<div class="section-body"><p>Cold applications convert to interviews at roughly 2 to 3%. A referral gets you into the 40 to 60% range. Referrals account for 30 to 50% of actual hires, despite being a small share of total applicants. This is not a small edge, it is the difference between being ignored and being read.</p></div>') +
+      structList('The Real Order Of Operations', [
+        ['Warm referral, always try this first','40 to 60% interview rate versus 2 to 3% cold. If there is any path to a warm intro, take it before anything else.'],
+        ['Manufacture a warm connection if you have none','Do one free real project for a small business, from Week 2, and that relationship becomes your referral path.'],
+        ['Direct outreach, the fallback','No connection and no time to build one yet. Message the hiring manager directly, on LinkedIn or by email.']
+      ]) +
+      section('Try It: Your Referral Math', tool('See your own numbers, not just the stat',
+        field('rm_warm','How many warm contacts do you actually have right now?') + field('rm_cold','How many cold applications are you planning to send?') + smallBtn('rm_calc','Calculate') + outbox('rmout'))) +
+      section('Which One Fits You Right Now', tool('Quick Picker',
+        '<div class="field"><label>Do you know anyone at the company, even loosely?</label><select id="pk_conn"><option value="">Choose one</option><option value="yes">Yes</option><option value="no">No</option></select></div>' +
+        '<div class="field"><label>Do you have a portfolio piece ready to attach?</label><select id="pk_proof"><option value="">Choose one</option><option value="yes">Yes</option><option value="no">No</option></select></div>' +
+        '<div class="out-box" id="pkout">Answer both to get a recommendation.</div>')) +
+      section('Finding The Person, Not Just The Message', structList('', [
+        ['Search "[Company] RevOps" or "[Company] Marketing Ops"','This usually finds the actual team, not just HR.'],
+        ['Check who posted the job on LinkedIn','That person is very often the hiring manager themselves.'],
+        ['Look for a name buried in the posting','Some postings name a team lead or mention them in a nearby company update.'],
+        ['Check your 2nd-degree connections at the company first','A mutual connection beats a cold message every time.']
+      ])) +
+      section('If You Have A Warm Path: The Referral Ask', example('Your track: ' + { basic:'Not Technical', mid:'Mid-Technical', high:'Very Technical' }[answers.track], outreachReferral[answers.track])) +
+      section('If You Do Not: Direct Outreach, By LinkedIn Or Email', formula('Opening, a real trigger about them, plus Body, the problem it creates in 1-2 sentences, plus One clear CTA') +
+        example('Full Example',
+          '<b>Subject or opening line:</b> Saw you just raised your Series B and are bringing on 5 new AEs this quarter.\n\n<b>Body:</b> Ramping that many reps at once usually means a slower time to first deal while they learn your ICP by trial and error.\n\n<b>CTA:</b> Worth a 15-minute look at how I have tackled this before?')) +
+      section('The Mistakes That Kill Replies', mistakes([
+        '"I wanted to reach out" or "quick question" as an opener, says nothing',
+        'A compliment instead of a fact ("great company!" vs. the actual trigger)',
+        'More than one ask in the same message',
+        'Explaining your whole background instead of one relevant problem'
+      ])) +
+      section('Try It: Build Your Outreach Message', tool('Direct outreach builder',
+        field('e_trigger','The real trigger (something specific and true about them)') +
+        field('e_problem','The problem that trigger creates for them') +
+        field('e_cta','Your one clear ask') +
+        outbox('eout'))) +
+      section('Try It: Follow-Up Sequence', tool('Most people send one message and stop, do not be most people',
+        field('fu_name','Their first name') + field('fu_topic','What you referenced in your first message') + smallBtn('fu_build','Build My Follow-Ups') + outbox('fuout')));
+
+    const pkUpd = () => {
+      const c = val('pk_conn'), p = val('pk_proof');
+      const out = document.getElementById('pkout');
+      if(!c || !p){ out.textContent = 'Answer both to get a recommendation.'; return; }
+      if(c === 'yes'){ out.textContent = 'Lead with the warm referral ask below. It converts at 40 to 60%, versus 2 to 3% cold, even without a portfolio piece ready.'; }
+      else if(p === 'yes'){ out.textContent = 'No connection yet, but you have proof. Go with direct outreach and attach your project in the first message.'; }
+      else { out.textContent = 'No connection and nothing built yet. Go finish one project from the portfolio module first, then come back to outreach.'; }
+    };
+    document.getElementById('pk_conn').addEventListener('change', pkUpd);
+    document.getElementById('pk_proof').addEventListener('change', pkUpd);
+
+    document.getElementById('rm_calc').addEventListener('click', () => {
+      const warm = parseFloat(val('rm_warm')) || 0;
+      const cold = parseFloat(val('rm_cold')) || 0;
+      const warmInterviews = (warm * 0.5).toFixed(1);
+      const coldInterviews = (cold * 0.025).toFixed(1);
+      showOut('rmout', 'From ' + warm + ' warm contacts, expect roughly ' + warmInterviews + ' interviews.<br>From ' + cold + ' cold applications, expect roughly ' + coldInterviews + ' interviews.<br>One warm contact is worth about 20 cold applications.');
+    });
+
+    const upd = () => {
+      const t = val('e_trigger'), p = val('e_problem'), c = val('e_cta');
+      document.getElementById('eout').textContent = (t||p||c) ?
+        'Opening: ' + (t||'[trigger]') + '\nBody: ' + (p||'[problem]') + '\nCTA: ' + (c||'[ask]') :
+        'Fill in the fields above to see your structured message.';
+    };
+    ['e_trigger','e_problem','e_cta'].forEach(id => listen(id, upd));
+    upd();
+
+    document.getElementById('fu_build').addEventListener('click', () => {
+      const name = val('fu_name') || 'there', topic = val('fu_topic') || 'my last note';
+      showOut('fuout',
+        '<b>Day 1 (original):</b> reference ' + topic + ' and make your one ask.<br><br>' +
+        '<b>Day 4:</b> Hi ' + name + ', following up on ' + topic + '. Happy to send more context if useful.<br><br>' +
+        '<b>Day 8:</b> Hi ' + name + ', last note on this one. If timing is off, no worries at all, would still love to connect.');
+    });
+  }
+
+  /* ===================== WEEK 4: INTERVIEW ===================== */
+  const interviewExamples = {
+    basic: "Context: Our trial-to-paid rate had been flat for two quarters.\nWhat I Did: I pulled 20 lost trials and found most churned before ever seeing the core feature, so I mapped a simpler first-week email sequence pointing straight at it.\nMetric: Trial-to-paid rate moved from 11% to 15% over the next quarter.\nReflection: I'd now build the tracking for this from day one instead of reconstructing it after the fact.",
+    mid: "Context: Reps were manually checking 4 tools before every call.\nWhat I Did: Built a Clay table pulling firmographic and engagement data into one view, synced to Salesforce.\nMetric: Prep time per call dropped from 12 minutes to under 2.\nReflection: I underestimated how much reps needed to trust the data before actually using it, adoption took an extra 2 weeks.",
+    high: "Context: Attribution was manual and a week behind.\nWhat I Did: Built a SQL-based multi-touch model on our warehouse, scheduled to refresh daily.\nMetric: Caught an underperforming channel 3 weeks earlier than before.\nReflection: I'd add automated anomaly alerts next time instead of relying on someone checking the dashboard."
+  };
+  const interviewQuestions = {
+    basic: [
+      "If marketing says lead volume is up but pipeline has not increased, where would you start diagnosing?",
+      "What KPIs do you think a GTM Engineer should own?",
+      "Tell me about a time you automated a process that changed how your GTM team worked.",
+      "What is a tool or workflow you are most proud of building, and why?",
+      "How do you stay up to date with new GTM tools and trends?",
+      "What would your first 90 days look like in this role?",
+      "How would you measure the ROI of a new sales enablement program?"
+    ],
+    mid: [
+      "How would you build a workflow that alerts an AE when an opportunity goes cold?",
+      "Have you used AI tools, like Clay or ChatGPT, to automate GTM workflows? Give an example.",
+      "Describe a time you balanced short-term sales needs with long-term system scalability.",
+      "How would you redesign a lead scoring model if conversion rates dropped 15% quarter over quarter?",
+      "How do you ensure collaboration across RevOps, Marketing Ops, and Sales Ops teams stays functional?",
+      "Explain how you would prioritize competing requests from Sales, Marketing, and Customer Success when you can only deliver on one this quarter."
+    ],
+    high: [
+      "How would you connect Clay, Salesforce, and HubSpot to ensure a single source of truth for lead data?",
+      "Walk me through a data pipeline you have built. What were the inputs, transformations, and outputs?",
+      "How do you monitor data quality across systems and prevent sync errors?",
+      "What is your experience writing SQL queries or using APIs for integrations?",
+      "Have you used AI tools to automate GTM workflows? Give a specific example."
+    ]
+  };
+  const diagnosticScenarios = {
+    basic: "Reply rates on your outbound emails dropped 30% this month, with no change to list size. What do you check, and in what order?",
+    mid: "A workflow that used to route leads correctly is now sending 20% of them to the wrong rep. What do you check first?",
+    high: "Your attribution dashboard shows a channel producing zero revenue, but marketing swears it is working. Where do you start?"
+  };
+  function renderWeek4(){
+    document.getElementById('modDesc').textContent = "Most technical people ramble in interviews because they never had a structure to hang the answer on. Here is one, plus a real bank of sourced questions to practice it on.";
+    const area = document.getElementById('modToolArea');
+    const qs = interviewQuestions[answers.track];
+    if(interviewQIndex >= qs.length) interviewQIndex = 0;
+    area.innerHTML =
+      section('What They Are Actually Testing', '<div class="section-body"><p>Interviewers are testing systems thinking under ambiguity, not whether you memorized a framework. They want to see you break a vague problem into parts, state your assumptions, and explain your fallback if the first idea does not work.</p></div>') +
+      structList('The 4-Part Structure', [
+        ['Context','The specific situation, one sentence. Not "we had problems," the actual problem.'],
+        ['What You Did','The specific action and tool, not a general skill.'],
+        ['Metric','What changed, as a number. If there is no number, that is the real gap to fix before the interview.'],
+        ['Reflection','What you would do differently. This is the part almost nobody includes, and it is what separates a rehearsed answer from a real one.']
+      ]) +
+      section('A Full Worked Answer At Your Level', example('Your track: ' + { basic:'Not Technical', mid:'Mid-Technical', high:'Very Technical' }[answers.track], interviewExamples[answers.track])) +
+      section('Try It: Diagnostic Scenario', tool('What real interviewers test for',
+        '<p style="font-weight:700;margin-bottom:14px;">' + diagnosticScenarios[answers.track] + '</p>' +
+        fieldTA('d_steps','Write out your diagnostic steps, in order',5) + smallBtn('d_check','Check My Thinking') + outbox('dout'))) +
+      section('Real Questions For Your Track (' + qs.length + ')', '<div class="section-body"><p id="iq_current" style="font-weight:700;">' + qs[interviewQIndex] + '</p></div><button class="small-btn" id="iq_next" type="button">Next Question</button>') +
+      section('Try It: Story Bank', tool('Load 3 stories before you ever hear these questions live',
+        fieldTA('sb_story1','Story 1: what happened, briefly',2) + field('sb_tag1','What does it prove? (built something technical, solved ambiguity, cross-functional work)') +
+        fieldTA('sb_story2','Story 2',2) + field('sb_tag2','What does it prove?') +
+        fieldTA('sb_story3','Story 3',2) + field('sb_tag3','What does it prove?') +
+        smallBtn('sb_save','Review My Bank') + outbox('sbout'))) +
+      section('Practice It', tool('Answer Using The 4-Part Structure',
+        field('i_context','Context') + field('i_did','What You Did') + field('i_metric','Metric') + field('i_reflect','Reflection') +
+        smallBtn('iq_check','Check My Answer') + outbox('iqout')));
+
+    document.getElementById('iq_next').addEventListener('click', () => {
+      interviewQIndex = (interviewQIndex + 1) % qs.length;
+      document.getElementById('iq_current').textContent = qs[interviewQIndex];
+    });
+
+    document.getElementById('d_check').addEventListener('click', () => {
+      const text = val('d_steps').toLowerCase();
+      const checks = [
+        { pass: /data|quality|sync|log/.test(text), label:'Checks the data itself before assuming a strategy problem' },
+        { pass: /isolat|one at a time|first|then|narrow|next/.test(text), label:'Isolates variables instead of guessing at one cause' },
+        { pass: /deliverab|spam|segment|list|channel|rule|filter/.test(text), label:'Names a specific, checkable thing, not just a vague area' },
+        { pass: text.trim().split(/\s+/).filter(Boolean).length >= 15, label:'Detailed enough to actually follow' }
+      ];
+      const score = checks.filter(c => c.pass).length;
+      showOut('dout', '<b>' + score + ' of 4.</b><br>' + checks.map(c => (c.pass ? '&#10003; ' : '&#10007; ') + c.label).join('<br>'));
+    });
+
+    document.getElementById('sb_save').addEventListener('click', () => {
+      const stories = [[val('sb_story1'),val('sb_tag1')],[val('sb_story2'),val('sb_tag2')],[val('sb_story3'),val('sb_tag3')]].filter(s => s[0]);
+      if(!stories.length){ showOut('sbout', 'Add at least one story to see your bank.'); return; }
+      showOut('sbout', '<b>' + stories.length + ' of 3 stories ready.</b><br>' + stories.map((s,i) => 'Story ' + (i+1) + ' proves: ' + (s[1] || 'not tagged yet')).join('<br>'));
+    });
+
+    document.getElementById('iq_check').addEventListener('click', () => {
+      const c = val('i_context'), w = val('i_did'), m = val('i_metric'), r = val('i_reflect');
+      const checks = [
+        { pass: c.trim().split(/\s+/).filter(Boolean).length >= 5, label:'Context is specific, not just "we had an issue"' },
+        { pass: /\b(built|automated|wrote|connected|designed|launched|created|fixed|migrated|ran|shipped)\b/i.test(w), label:'What You Did names a real action and tool' },
+        { pass: /\d/.test(m), label:'Metric has an actual number' },
+        { pass: /\b(would|next time|differently|instead|now)\b/i.test(r), label:'Reflection shows what you would change' }
+      ];
+      const score = checks.filter(x => x.pass).length;
+      showOut('iqout', '<b>' + score + ' of 4.</b><br>' + checks.map(x => (x.pass ? '&#10003; ' : '&#10007; ') + x.label).join('<br>'));
+    });
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => { if(currentWeek>1){ currentWeek--; renderApp(); } });
+  document.getElementById('nextBtn').addEventListener('click', () => { progress[currentWeek] = true; if(currentWeek<4){ currentWeek++; } renderApp(); });
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    document.getElementById('app').classList.remove('show');
+    document.getElementById('screen-intro').classList.add('show');
+    progress = {1:false,2:false,3:false,4:false};
+    interviewQIndex = 0;
+  });
+</script>
+
+</body>
+</html>
