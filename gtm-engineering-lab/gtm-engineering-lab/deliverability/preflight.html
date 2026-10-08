@@ -82,12 +82,12 @@
   }
   .gtitle { min-width: 0; }
   .ghead h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.35; }
-  .num { color: var(--secondary); font-weight: 500; font-variant-numeric: tabular-nums; margin-right: 6px; }
+  .num { color: var(--secondary); font-weight: 500; font-variant-numeric: tabular-nums; }
+  h1 { text-wrap: balance; }
   .dek { margin-top: 3px; font-size: 13px; line-height: 1.45; color: var(--secondary); }
   .gp { flex: none; text-align: right; font-size: 13px; color: var(--secondary); font-variant-numeric: tabular-nums; padding-top: 2px; }
-  .gbar { height: 2px; width: 72px; margin: 6px 0 0 auto; background: var(--line); }
-  .gbar i { display: block; height: 100%; width: 0; background: var(--accent); }
-  .ghead.done .gbar i { background: var(--ok); }
+  .gbar { display: none; }
+  .ghead.done .gp { color: var(--ok); }
   .group + .group { border-top: 1px solid var(--line); }
 
   .item { padding: 14px 20px 10px; border-top: 1px solid var(--line-soft); }
@@ -98,7 +98,7 @@
   .tag.bp { color: var(--secondary); font-weight: 400; }
 
   .pills { display: flex; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); }
-  .pills label { position: relative; flex: 1 1 0; display: block; }
+  .pills label { position: relative; flex: 1 1 0; min-width: 0; display: block; }
   .pills label + label { border-left: 1px solid var(--line-strong); }
   .pills input {
     position: absolute;
@@ -237,13 +237,14 @@
   .st.rq { color: var(--ink); }
   .fmeta .st + .st::before { content: "·"; margin: 0 4px; color: #b9b6b0; font-weight: 400; }
   .empty { margin-top: 12px; font-size: 14px; line-height: 1.45; color: var(--ok); }
-  .btns { display: flex; gap: 8px; margin-top: 16px; position: sticky; bottom: 0; padding-top: 12px; background: var(--surface); }
+  .btns { display: flex; gap: 8px; margin-top: 16px; }
   button { height: 36px; padding: 0 12px; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; }
   .btn-primary { flex: 1; background: var(--accent); color: #fff; border: 1px solid var(--accent); }
   .btn-primary:hover { background: #183f64; }
   .btn-ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); }
   .btn-ghost:hover { background: #f4f3f1; }
-  .toast { min-height: 1.25em; margin-top: 8px; font-size: 13px; color: var(--ok); }
+  .toast { margin-top: 8px; font-size: 13px; color: var(--ok); }
+  .toast:empty { display: none; }
 
   .mbar {
     display: none;
@@ -341,16 +342,16 @@
             <div class="stat"><b id="sBp">0/17</b><span>Best practice</span></div>
             <div class="stat"><b id="sFix">26</b><span>Open fixes</span></div>
           </div>
-        </div>
-        <div class="fixwrap">
-          <div class="fixhead"><h3>Your fix list</h3><span>Required first</span></div>
-          <ol class="fix" id="fixList"></ol>
-          <p class="empty" id="fixEmpty" hidden>Nothing to fix. Keep monitoring weekly.</p>
           <div class="btns">
             <button type="button" class="btn-primary" id="copyBtn">Copy my fix list</button>
             <button type="button" class="btn-ghost" id="resetBtn">Reset</button>
           </div>
           <div class="toast" id="toast" role="status"></div>
+        </div>
+        <div class="fixwrap">
+          <div class="fixhead"><h3>Your fix list</h3><span>Required first</span></div>
+          <ol class="fix" id="fixList"></ol>
+          <p class="empty" id="fixEmpty" hidden>Nothing to fix. Keep monitoring weekly.</p>
         </div>
       </div>
     </aside>
@@ -513,7 +514,7 @@
       var num = String(gi + 1);
       nav += '<a class="gchip" id="nav-'+g.id+'" href="#g-'+g.id+'"><span class="n"><span>'+num+'. '+esc(g.name)+'</span><span id="nc-'+g.id+'"></span></span><span class="mini"><i id="nb-'+g.id+'"></i></span></a>';
       html += '<section class="group" id="g-'+g.id+'" aria-labelledby="h-'+g.id+'">'+
-        '<div class="ghead" id="gh-'+g.id+'"><div class="gtitle"><h2 id="h-'+g.id+'"><span class="num">'+num+'</span> '+esc(g.name)+'</h2><p class="dek">'+esc(BLURB[g.id])+'</p></div>'+
+        '<div class="ghead" id="gh-'+g.id+'"><div class="gtitle"><h2 id="h-'+g.id+'"><span class="num">'+num+'.</span> '+esc(g.name)+'</h2><p class="dek">'+esc(BLURB[g.id])+'</p></div>'+
         '<div class="gp"><span id="c-'+g.id+'"></span><div class="gbar" aria-hidden="true"><i id="gb-'+g.id+'"></i></div></div></div>'+
         '<div class="items">';
       g.items.forEach(function(it){
