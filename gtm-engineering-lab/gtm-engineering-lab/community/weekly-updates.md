@@ -7,3 +7,6 @@ Launched the repo. Added the full Technical Debt kit: Decision Log, GTM Mistake 
 
 ## Week 2 — [YYYY-MM-DD]
 [Coming soon]
+
+## Week 09 — 2026-10-08
+Added the Deliverability Pre-Flight Check: a sourced lesson on what Google, Yahoo and Microsoft require from senders, an interactive pre-flight checker, and a domain setup tracker.
