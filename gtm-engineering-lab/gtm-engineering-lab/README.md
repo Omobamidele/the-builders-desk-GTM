@@ -1,3 +1,13 @@
+# Week 11 — Build Your Own Morning Brief Agent
+
+A do-it-yourself version of a proactive assistant: every morning it watches your email, calendar and Slack, sorts what needs you today, prepares drafts, and asks before anything is sent. Four steps: Watch, Sort, Prepare, Ask. Includes an importable n8n workflow, prompts, and fictional sample data.
+
+Start here: [`week-11-morning-brief-agent/`](./week-11-morning-brief-agent/)
+
+## Week 10 — Skills
+
+A template and checklist for writing reusable AI skills, with a worked pre-call brief example: [`week-10-skills/`](./week-10-skills/)
+
 # Week 09 — The Deliverability Pre-Flight Check
 
 Most cold email problems aren't copy problems. The emails never reach the inbox. This week is the check to run before you scale any sending, split into what Google, Yahoo and Microsoft actually require and what practitioners recommend:

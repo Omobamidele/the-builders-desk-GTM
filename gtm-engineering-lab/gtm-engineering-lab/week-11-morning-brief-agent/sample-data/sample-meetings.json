@@ -1,0 +1,5 @@
+[
+  {"id": "cal-1", "title": "Discovery call - Harbor Point Labs", "start": "2026-01-15T10:00:00Z", "end": "2026-01-15T10:30:00Z", "attendees": ["marcus@harborpointlabs.example"], "description": "First call. Marcus is Head of RevOps. Inbound from website demo form."},
+  {"id": "cal-2", "title": "Renewal call - Northwind Software", "start": "2026-01-15T14:00:00Z", "end": "2026-01-15T14:45:00Z", "attendees": ["priya@northwindsoftware.example", "tom@northwindsoftware.example"], "description": "Annual renewal. Open question on reporting add-on pricing."},
+  {"id": "cal-3", "title": "Team standup", "start": "2026-01-15T09:00:00Z", "end": "2026-01-15T09:15:00Z", "attendees": ["team@yourcompany.example"], "description": "Recurring daily standup."}
+]

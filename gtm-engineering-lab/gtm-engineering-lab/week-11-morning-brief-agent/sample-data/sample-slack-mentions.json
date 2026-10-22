@@ -1,0 +1,5 @@
+[
+  {"id": "slack-1", "channel": "#sales-team", "user": "Jordan (Sales Manager)", "ts": "2026-01-14T08:20:00Z", "text": "@you can you update the Northwind deal stage in the CRM before forecast review today?"},
+  {"id": "slack-2", "channel": "#general", "user": "Office Ops", "ts": "2026-01-13T17:00:00Z", "text": "@channel reminder: the office will close early on Friday."},
+  {"id": "slack-3", "channel": "#marketing", "user": "Sam (Content)", "ts": "2026-01-14T07:55:00Z", "text": "@you no rush, but when you get a chance next week could you review the draft case study?"}
+]

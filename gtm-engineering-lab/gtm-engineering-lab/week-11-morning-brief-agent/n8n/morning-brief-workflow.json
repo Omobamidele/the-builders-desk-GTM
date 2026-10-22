@@ -1,0 +1,338 @@
+{
+  "name": "Morning Brief Agent (Builder's Desk Week 11)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "every-day-8am",
+      "name": "Every day 8am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": false,
+        "limit": 30,
+        "simple": true,
+        "filters": {
+          "q": "is:unread newer_than:1d"
+        }
+      },
+      "id": "get-unread-emails",
+      "name": "Get unread emails",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        260,
+        100
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_ME",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": "primary"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $now.plus({days:1}).startOf('day').toISO() }}",
+        "timeMax": "={{ $now.plus({days:1}).endOf('day').toISO() }}",
+        "options": {}
+      },
+      "id": "get-tomorrows-meetings",
+      "name": "Get tomorrow's meetings",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        260,
+        300
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "REPLACE_ME",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "search",
+        "query": "<@YOUR_SLACK_USER_ID> after:{{ $now.minus({days:1}).toFormat('yyyy-MM-dd') }}",
+        "limit": 30,
+        "options": {}
+      },
+      "id": "get-slack-mentions",
+      "name": "Get Slack mentions",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        260,
+        500
+      ],
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "REPLACE_ME",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "merge-all-sources",
+      "name": "Merge all sources",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turn everything into one short text list for Claude\nconst items = $input.all().map((i, idx) => {\n  const j = i.json;\n  if (j.start) return { id: `cal-${idx}`, source: 'calendar', title: j.summary, start: j.start.dateTime || j.start.date, attendees: (j.attendees||[]).map(a=>a.email), description: (j.description||'').slice(0,500) };\n  if (j.channel || j.permalink) return { id: `slack-${idx}`, source: 'slack', channel: j.channel?.name, user: j.username || j.user, text: (j.text||'').slice(0,800) };\n  return { id: `email-${idx}`, source: 'email', from: j.From || j.from, subject: j.Subject || j.subject, snippet: (j.snippet||'').slice(0,800) };\n});\nreturn [{ json: { items_text: JSON.stringify(items, null, 1), count: items.length } }];"
+      },
+      "id": "bundle-items",
+      "name": "Bundle items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 3000, system: \"You are my morning triage assistant. I'll give you a list of items from my email, calendar and Slack. For each one, decide: does this need me today?\\n\\n## Categories\\n- `needs_me_today` \\u2014 someone is waiting on me, there's a deadline today or tomorrow, a meeting I need to prep for, or a customer/manager asking a direct question.\\n- `can_wait` \\u2014 needs me, but not today. No deadline in the next 48 hours.\\n- `fyi` \\u2014 useful to know, no action needed (updates, announcements, CC'd threads).\\n- `ignore` \\u2014 newsletters, automated notifications, promotions, anything with no action and no value.\\n\\n## What counts as needs-you-today (edit this list)\\n- Direct questions addressed to me by name\\n- Anything from my manager or a current customer\\n- Meetings tomorrow that I haven't prepped for\\n- Words like \\\"today\\\", \\\"EOD\\\", \\\"urgent\\\", \\\"blocking\\\"\\n\\n## Rules\\n- Only use information in the items. Do not guess at facts that aren't there.\\n- If you're unsure between two categories, pick the more urgent one and say why in `reason`.\\n- Keep `summary` to one sentence.\\n- `suggested_action` is one of: `reply`, `prep`, `read`, `none`.\\n\\n## Output\\nReturn only valid JSON, no extra text:\\n\\n```json\\n{\\n  \\\"items\\\": [\\n    {\\n      \\\"id\\\": \\\"string, from the input\\\",\\n      \\\"source\\\": \\\"email | calendar | slack\\\",\\n      \\\"category\\\": \\\"needs_me_today | can_wait | fyi | ignore\\\",\\n      \\\"summary\\\": \\\"one sentence\\\",\\n      \\\"reason\\\": \\\"why this category\\\",\\n      \\\"suggested_action\\\": \\\"reply | prep | read | none\\\"\\n    }\\n  ],\\n  \\\"top_three\\\": [\\\"id\\\", \\\"id\\\", \\\"id\\\"]\\n}\\n```\\n\\nAfter the JSON triage, for each needs_me_today item add a field `draft_or_prep`: a short draft reply (for replies) or a 3-line prep note (for meetings). Only use facts in the items. If there isn't enough information, write \\\"not enough info\\\" and what's missing. Never commit to times, prices or deadlines on my behalf.\", messages: [{ role: 'user', content: 'Here are my items:\\n' + $json.items_text }] }) }}",
+        "options": {}
+      },
+      "id": "ask-claude-to-triage",
+      "name": "Ask Claude to triage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_ME",
+          "name": "Anthropic API key (x-api-key)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turn Claude's JSON into one readable digest\nconst raw = ($json.content || []).map(c => c.text || '').join('');\nlet data;\ntry { data = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1)); }\ncatch (e) { return [{ json: { digest: '*Morning brief*\\nCould not read Claude\\'s answer. Raw output:\\n' + raw } }]; }\nconst groups = { needs_me_today: [], can_wait: [], fyi: [] };\nfor (const it of data.items || []) if (groups[it.category]) groups[it.category].push(it);\nlet out = '*Morning brief* (drafts only, nothing has been sent)\\n\\n*Needs you today*\\n';\nfor (const it of groups.needs_me_today) out += `- [${it.source}] ${it.summary}\\n  Draft/prep: ${it.draft_or_prep || 'n/a'}\\n`;\nout += '\\n*Can wait*\\n' + groups.can_wait.map(i => `- ${i.summary}`).join('\\n');\nout += '\\n\\n*FYI*\\n' + groups.fyi.map(i => `- ${i.summary}`).join('\\n');\nout += '\\n\\nReview, edit and send any drafts yourself.';\nreturn [{ json: { digest: out } }];"
+      },
+      "id": "format-digest",
+      "name": "Format digest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_SLACK_USER_ID"
+        },
+        "text": "={{ $json.digest }}",
+        "otherOptions": {}
+      },
+      "id": "send-digest-to-me-(slack)",
+      "name": "Send digest to me (Slack)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1560,
+        200
+      ],
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "REPLACE_ME",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "YOUR_OWN_EMAIL@example.com",
+        "subject": "={{ 'Morning brief ' + $now.toFormat('yyyy-MM-dd') }}",
+        "emailType": "text",
+        "message": "={{ $json.digest }}",
+        "options": {}
+      },
+      "id": "send-digest-to-me-(email)",
+      "name": "Send digest to me (email)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1560,
+        400
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_ME",
+          "name": "Gmail account"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Every day 8am": {
+      "main": [
+        [
+          {
+            "node": "Get unread emails",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get tomorrow's meetings",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Slack mentions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get unread emails": {
+      "main": [
+        [
+          {
+            "node": "Merge all sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get tomorrow's meetings": {
+      "main": [
+        [
+          {
+            "node": "Merge all sources",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Slack mentions": {
+      "main": [
+        [
+          {
+            "node": "Merge all sources",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge all sources": {
+      "main": [
+        [
+          {
+            "node": "Bundle items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bundle items": {
+      "main": [
+        [
+          {
+            "node": "Ask Claude to triage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask Claude to triage": {
+      "main": [
+        [
+          {
+            "node": "Format digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format digest": {
+      "main": [
+        [
+          {
+            "node": "Send digest to me (Slack)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send digest to me (email)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

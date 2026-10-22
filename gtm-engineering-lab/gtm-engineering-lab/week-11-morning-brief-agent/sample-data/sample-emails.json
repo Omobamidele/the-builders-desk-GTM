@@ -1,0 +1,8 @@
+[
+  {"id": "email-1", "from": "Priya Shah <priya@northwindsoftware.example>", "subject": "Quick question before Thursday's renewal call", "received": "2026-01-14T07:42:00Z", "body": "Hi, before our call Thursday can you confirm whether the new reporting add-on is included in our current plan or priced separately? Our finance team needs to know by end of day today. Thanks, Priya"},
+  {"id": "email-2", "from": "Weekly Growth Digest <news@growthdigest.example>", "subject": "10 subject lines to try this week", "received": "2026-01-14T06:00:00Z", "body": "This week's newsletter: subject line ideas, a webinar invite, and our partner offers. Unsubscribe anytime."},
+  {"id": "email-3", "from": "Daniel Okafor <daniel@brightpathhr.example>", "subject": "Re: pilot results", "received": "2026-01-13T16:15:00Z", "body": "Thanks for sending the summary. I've shared it with my team and we'll come back to you next week with feedback. No rush on your side."},
+  {"id": "email-4", "from": "Elena Ruiz <elena@yourcompany.example>", "subject": "Need the Q1 pipeline slide - urgent", "received": "2026-01-14T08:05:00Z", "body": "Can you send me the Q1 pipeline slide before the leadership meeting at 2pm today? Just the one slide is fine."},
+  {"id": "email-5", "from": "Calendar Bot <noreply@scheduler.example>", "subject": "Reminder: your subscription renews in 30 days", "received": "2026-01-14T05:30:00Z", "body": "This is an automated reminder. No action needed."},
+  {"id": "email-6", "from": "Marcus Lee <marcus@harborpointlabs.example>", "subject": "Can we move our call?", "received": "2026-01-14T07:10:00Z", "body": "Something came up. Any chance we can move tomorrow's call to later in the week? Let me know what works."}
+]
