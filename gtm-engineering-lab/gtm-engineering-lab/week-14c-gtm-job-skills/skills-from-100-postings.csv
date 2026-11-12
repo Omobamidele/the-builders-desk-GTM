@@ -1,0 +1,23 @@
+skill_or_task,postings_out_of_100,GTM_Engineer_of_45,RevOps_of_35,Growth_Outbound_of_20,match_pattern
+CRM (HubSpot or Salesforce),62,29,30,3,hubspot|salesforce
+Reporting / dashboards / forecasting,62,24,29,9,dashboard|reporting|forecast
+APIs,61,34,20,7,\bapis?\b
+Enrich or score or route,58,32,20,6,enrich|scoring|\bscore|routing|round[- ]robin|lead assignment
+SQL,51,26,14,11,\bsql\b
+"LLMs / AI (OpenAI, Claude, GPT, LLM)",50,31,11,8,\bllms?\b|openai|claude|\bgpt|anthropic
+Salesforce,48,23,23,2,salesforce
+"Any of Clay, n8n, Zapier or Workato",47,30,14,3,\bclay\b|\bn8n\b|zapier|workato
+HubSpot,46,19,24,3,hubspot
+"Python, JavaScript/TypeScript or Node",46,25,10,11,\bpython\b|javascript|typescript|node\.?js
+"Measured results (ROI, A/B test, experiment, measurable/pipeline/revenue impact)",46,22,9,15,\broi\b|a/b test|experiment|measurable impact|pipeline impact|revenue impact
+Enrichment,44,29,12,3,enrich
+CRM data hygiene,44,18,24,2,data hygiene|data quality|dedup|de-dup|clean(ing)? up|data integrity
+Python,41,24,10,7,\bpython\b
+Outbound / prospecting / sequences (exact words),35,26,7,2,outbound|prospecting|cold email|sequenc
+Clay,33,25,7,1,\bclay\b
+Lead routing / assignment,32,17,14,1,routing|round[- ]robin|lead assignment|assignment rules
+Sales Ops / Sales Operations named,30,9,21,0,sales ops|sales operations
+n8n,28,17,10,1,\bn8n\b
+Zapier,25,15,8,2,zapier
+Lead/account scoring,21,17,4,0,(lead|account|icp|fit)\s+scor|scoring
+Workato,10,7,3,0,workato

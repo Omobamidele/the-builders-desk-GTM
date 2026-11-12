@@ -1,3 +1,9 @@
+# I scraped 100 GTM jobs so you don't have to
+
+For you if you're moving into GTM or want a GTM job. All 100 GTM Engineer, RevOps and Growth/Outbound job posts in one sheet (links, tools each one asks for, salary where listed), the skills breakdown, a one-page checklist and a 4-week plan for your first GTM build.
+
+Start here: [`week-14c-gtm-job-skills/`](./week-14c-gtm-job-skills/)
+
 # Week 11 — Build Your Own Morning Brief Agent
 
 A do-it-yourself version of a proactive assistant: every morning it watches your email, calendar and Slack, sorts what needs you today, prepares drafts, and asks before anything is sent. Four steps: Watch, Sort, Prepare, Ask. Includes an importable n8n workflow, prompts, and fictional sample data.
