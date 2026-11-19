@@ -1,3 +1,9 @@
+# Week 15 — 58 free GTM courses and certifications
+
+For you if you're in sales, RevOps, lead gen or business development, or moving into a GTM role. 58 free courses and certifications in one sheet (HubSpot, Clay, Apollo, Salesforce Trailhead, LinkedIn, n8n, Zapier, Make, OpenAI, Anthropic, Google and more), with who each one is for, how long it takes, whether the certificate is free, and a start-here path for SDR/BDR, RevOps and GTM Engineer roles. Every link checked on Nov 19, 2026.
+
+Start here: [`week-15-free-gtm-courses/`](./week-15-free-gtm-courses/)
+
 # I scraped 100 GTM jobs so you don't have to
 
 For you if you're moving into GTM or want a GTM job. All 100 GTM Engineer, RevOps and Growth/Outbound job posts in one sheet (links, tools each one asks for, salary where listed), the skills breakdown, a one-page checklist and a 4-week plan for your first GTM build.
