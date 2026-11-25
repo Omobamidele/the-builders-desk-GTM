@@ -1,0 +1,33 @@
+capability,listings,out_of,percent,GTM_Engineer,RevOps_Revenue_Operations,Sales_Operations,GTM_Revenue_Systems,GTM_Operations,Marketing_Operations,Other,match_pattern
+CRM (HubSpot or Salesforce),95,113,84.1,17,31,23,10,6,6,2,hubspot|salesforce
+"Reporting, dashboards or forecasting",89,113,78.8,12,33,26,6,4,5,3,dashboard|reporting|forecast
+Salesforce,85,113,75.2,15,25,22,9,6,6,2,salesforce
+SQL or a data warehouse,69,113,61.1,18,19,15,7,4,4,2,\bsql\b|bigquery|snowflake|redshift|\bdatabricks\b|data warehouse
+"Enrich, score or route leads/accounts",62,113,54.9,20,22,5,5,3,6,1,enrich|scoring|\bscore|routing|round[- ]robin|lead assignment
+SQL,59,113,52.2,17,18,10,6,4,2,2,\bsql\b
+"Quotas, pipeline targets or forecasting",56,113,49.6,2,26,18,4,4,2,0,\bquotas?\b|pipeline targets?|revenue targets?|bookings targets?|forecasting
+"Use LLMs (Claude, ChatGPT, GPT, OpenAI, Anthropic)",54,113,47.8,19,14,8,5,4,4,0,\bllms?\b|openai|claude|\bgpt\b|chatgpt|anthropic
+Partner with sales or marketing leaders,51,113,45.1,4,17,21,2,5,1,1,sales leaders?|marketing leaders?|\bcro\b|chief revenue|gtm leaders?|revops leaders?
+CRM data hygiene,50,113,44.2,12,17,8,5,2,3,3,data hygiene|data quality|dedup|de-dup|clean(?:ing)? up|data integrity
+Enrichment or data waterfalls,41,113,36.3,18,11,2,2,3,4,1,enrich|waterfall
+"Clay, n8n, Zapier, Make.com or Workato",41,113,36.3,18,11,4,3,2,2,1,"\bclay\b|\bn8n\b|zapier|workato|tray\.io|make\.com|(?:make,\s*(?:n8n|zapier|workato)|(?:n8n|zapier|workato),\s*make\b)"
+APIs or webhooks,38,113,33.6,20,7,2,7,1,1,0,\bapis?\b|webhook
+APIs,38,113,33.6,20,7,2,7,1,1,0,\bapis?\b
+Lead or account routing,38,113,33.6,11,14,0,5,3,4,1,routing|round[- ]robin|lead assignment|assignment rules
+"Build, ship or run AI agents or agentic workflows",36,113,31.9,15,8,4,4,3,2,0,"(?:build|building|ship|shipping|design|designing|deploy|deploying|run|running|implement|implementing|create|creating|develop|developing|own|owning|manage|managing|launch|launching|stand up|productionize)\s+(?:and\s+)?(?:the\s+)?(?:production[- ]?)?(?:ai |llm )?agents?|ai agents? (?:that|to|for|in|across|which)|agentic (?:workflows?|tooling|tools?|solutions?|systems?|automations?|coding|gtm|processes?)|autonomous agents?|agent[- ]based workflows?|production agents?|llm agents?|coding agents?|workflow tools.{0,40}agents?|agents?,?\s+workflow tools"
+Clay,36,113,31.9,17,10,4,1,2,1,1,\bclay\b
+HubSpot,33,113,29.2,11,11,3,2,1,3,2,hubspot
+Lead or account scoring,30,113,26.5,11,6,3,1,2,6,1,(lead|account|icp|fit)\s+scor|scoring
+"Outbound, prospecting or sequences",30,113,26.5,8,13,4,1,1,2,1,outbound|prospecting|cold email|sequenc
+"Python, JavaScript or TypeScript",26,113,23.0,14,5,1,4,1,0,1,\bpython\b|javascript|typescript|node\.?js
+Python,25,113,22.1,13,5,1,4,1,0,1,\bpython\b
+"Measured results (pipeline, revenue, ROI, experiments)",25,113,22.1,8,2,4,2,2,5,2,\broi\b|a/b test|experiment|measurable impact|pipeline impact|revenue impact
+Webhooks (named),19,113,16.8,13,2,0,4,0,0,0,webhook
+Zapier,17,113,15.0,7,6,0,2,1,1,0,zapier
+"Ship production systems, Git or CI/CD",12,113,10.6,5,2,0,5,0,0,0,\bci/?cd\b|version control|\bgit\b|github actions|production code|production (?:agents?|software|services|systems)
+AI evals or guardrails for AI output,11,113,9.7,6,3,1,0,0,0,1,"\bevals?\b|llm eval|agent eval|eval(?:uation)?s? (?:and|&) monitoring|evaluation and monitoring|prompt and eval|eval discipline|guardrails?|human[- ]in[- ]the[- ]loop|validate ai outputs|evaluations? around every ai|monitoring.{0,20}(?:ai|agents?|llm)"
+n8n,10,113,8.8,9,1,0,0,0,0,0,\bn8n\b
+MCP (Model Context Protocol),10,113,8.8,8,1,0,1,0,0,0,\bmcp\b|model context protocol
+"AI coding tools (Claude Code, Cursor, or 'vibe coding')",10,113,8.8,4,3,2,1,0,0,0,claude code|\bcursor\b|vibe coding|vibe-coding|ai[- ]assisted (?:development|coding)|ai development tools
+Signal- or intent-based outreach,8,113,7.1,6,0,0,0,0,2,0,signal[- ]based|buying signals?|intent (data|signals?|tools?)|intent[- ]based|\bthird[- ]party intent\b|\b1st[- ]party intent\b
+Email deliverability,7,113,6.2,3,2,0,0,0,1,1,deliverability|\bdkim\b|\bspf\b|\bdmarc\b|inbox placement
